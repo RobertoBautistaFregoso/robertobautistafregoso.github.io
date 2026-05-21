@@ -75,4 +75,36 @@ This debt MUST be paid before Phase 9 (Skills Review) and Phase 10 (Debrief) —
 
 ---
 
+## Phase 1 — Idea Selection & Problem Framing
+
+**Date started:** 2026-04-28
+**Status:** 🔄 **IN PROGRESS — direction pivoted.** First attempt deprioritized; restarting step 1 with a new problem.
+
+### Where I am in the phase
+
+PLAYBOOK Phase 1 has a 5-step Do list. I am restarting **step 1 (brainstorm)** with a new problem framing. Steps 2-5 + Build-a-skill moment still ahead.
+
+### Key decisions made so far
+
+1. **Setup gap discovered:** PLAYBOOK references `/product-management:brainstorm`, but the `product-management` plugin does NOT exist in `claude-plugins-official` marketplace (verified via `/plugin` discovery search). PLAYBOOK has a bug here. **Logged for Phase 9 revision:** *"Don't reference plugins by exact slash-command name unless install path is verified."*
+2. **Decision:** proceed with **freeform brainstorm in chat** instead of structured plugin. Step 2 onward uses `/problem-framing-canvas:problem-framing-canvas` which IS installed.
+3. **MCP newly connected since Phase 0:** `claude.ai Granola` (meeting transcripts). Available data source for any meeting-related framing.
+
+### First attempt — deprioritized
+
+Initial pain point #1 was written: *"Lots of client meetings I multitask through; watch recordings post-hoc to extract action items, findings, discussion, participants."* Sharpening Qs were never answered and pain #2 / #3 never written. Direction abandoned in favor of a new problem (TBD as of this entry). Keeping this note for history in case the meeting-extraction problem resurfaces in brainstorming.
+
+### Reflection debt status
+
+Phase 0 reflection debt remains on the books (unchanged from Phase 0 resumption note). Implicit choice from earlier: **option B — pay Phase 0 + Phase 1 debt at end of Phase 1.** Both will owe synthesis when Phase 1 closes.
+
+### State of repo
+
+- Branch `main`, 2 commits (`78223d7` bootstrap, `165358b` Phase 0 close)
+- LEARNINGS edits since Phase 0 close are uncommitted (not yet in git history)
+- No GitHub remote — Phase 4 territory
+- `docs/01-discovery/` folder not yet created
+
+---
+
 <!-- New phase entries get appended below. Don't edit prior entries — if you want to revise an insight, write the revision as a new entry that references the old one. Append-only is what makes this useful in Phase 10 debrief. -->
