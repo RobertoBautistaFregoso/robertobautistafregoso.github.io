@@ -204,7 +204,8 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 - Benign: GitHub's own actions (checkout/setup-node/upload-artifact @v4) run on Node 20, deprecated → forced to Node 24 by June 2026. Non-blocking; bump versions when convenient.
 
 ### Resumption — next session, in order:
-1. Sprint 1 remaining Musts: **S02 (hero)** → **S04 (featured projects)** → **S06 (CTA)**. Per story: `git checkout -b feat/S0N-slug` → re-read AC → plan → build → `npm run build` + local verify → PR → review → merge → deploy auto-runs → verify live → close issue. (The deploy pipeline now works — each merge to main auto-publishes.)
+0. **S01 ✅ + S02 ✅ shipped & live** (hero with real positioning + JSON-LD Person). Foundation in place: `Layout.astro` + `src/styles/global.css` (clean-minimal, system fonts, responsive, a11y).
+1. Sprint 1 remaining Musts: **S04 (featured projects)** → **S06 (CTA)**. Per story: `git checkout -b feat/S0N-slug` → re-read AC → plan → build → `npm run build` + local verify → PR → review → merge → deploy auto-runs → verify live → close issue. (Pipeline works — each merge to main auto-publishes. Reuse `Layout.astro` + add a section to `index.astro`.)
 2. Then Sprint 1 Shoulds: S03 (credibility), S07 (resume link). S05 (testimonials) is content-gated (need real testimonials first).
 3. Resume page is the next *screen* slice after the home screen.
 4. Content still owed by Roberto: real testimonials + NDA-cleared client names/logos (gates S03/S05 content).
