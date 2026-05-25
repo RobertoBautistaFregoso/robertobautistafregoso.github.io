@@ -1,5 +1,7 @@
 # LEARNINGS
 
+> **A build-in-public log.** This is the honest, unvarnished record of building this site — and learning the agentic SDLC — end to end. It deliberately includes the pivots, course-corrections, and things I got wrong the first time. That's the point: the value is in showing *how* the thinking evolved and self-corrected, not in pretending it was linear. If you're reading this as a hiring manager, client, or fellow builder — the visible self-correction *is* the signal.
+
 Append-only log. One entry per playbook phase. Written by Roberto in his own voice — Claude critiques, doesn't draft.
 
 Format per entry:
