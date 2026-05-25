@@ -98,12 +98,38 @@ Initial pain point #1 was written: *"Lots of client meetings I multitask through
 
 Phase 0 reflection debt remains on the books (unchanged from Phase 0 resumption note). Implicit choice from earlier: **option B — pay Phase 0 + Phase 1 debt at end of Phase 1.** Both will owe synthesis when Phase 1 closes.
 
-### State of repo
+### State of repo (at time this entry was written)
 
-- Branch `main`, 2 commits (`78223d7` bootstrap, `165358b` Phase 0 close)
-- LEARNINGS edits since Phase 0 close are uncommitted (not yet in git history)
+- Branch `main`, building toward Phase 1 discovery
 - No GitHub remote — Phase 4 territory
-- `docs/01-discovery/` folder not yet created
+
+---
+
+## Phase 1 — FINAL PIVOT to Portfolio Site (2026-05-25)
+
+**Decision:** Committing to building my **first portfolio site** (reference: itspatmorgan.com) as THE project to ride all the way through Phase 10. This is the last pivot.
+
+### The pivot history (a lesson in itself)
+
+Three problem directions explored before committing:
+1. **Meeting-recording extraction** — pain point only, no docs, deprioritized
+2. **Personal finance tracker** — full discovery arc completed + committed (commit `3d1c7d8`), then abandoned. Archived to `docs/archive/finance-tracker/` (not deleted — recoverable).
+3. **Portfolio site** — committed direction. ✅
+
+**The honest lesson (for reflection debt):** I did Phase 1 three times and Phase 2 zero times. The risk was never picking the "wrong" idea — it was perpetual idea-selection that never reached the actual learning (PRD → stories → build → ship → iterate, Phases 2-10). What does my 3× pivoting say about how I commit to projects? → flagged for reflection synthesis.
+
+**Why the portfolio is the right vehicle:** genuinely shippable in a realistic timeframe (finance app's categorization engine was real, weekend-eating engineering); I'll actually use it (AI PM consultant needs one); high motivation ("finally one I really want"); fits scope guardrail (one visitor-user, ≤3 screens, no auth); exercises design skills the finance app wouldn't have.
+
+**Watch-out:** a portfolio can be *too* simple (drop a template on Vercel in an hour = no real SDLC practice). Scope must keep it a genuine exercise: content/projects data model, working contact form with validation, deploy pipeline, real accessibility passes. Plus the harder, PM-flavored part: scoping discipline (what to show/cut) + visitor-first UX.
+
+### What carries forward
+
+- **Finance discovery is NOT wasted** — the *process* practice transferred (ran the full canvas → problem statement → success def arc, caught my own solution-first bias, killed a fabricated "5 hrs/week" metric, recovered a lost research doc). The artifact is shelved; the muscle is mine.
+- **Reflection debt now spans:** Phase 0 (4 definitions, "3 skills I'll lean on/build") + the 3× pivot lesson. Still owed.
+
+### Next
+
+Lightweight Phase 1 for the portfolio (problem is well-understood → quick problem statement + success definition, skip the heavy MITRE canvas). New discovery docs land fresh in `docs/01-discovery/`.
 
 ---
 
