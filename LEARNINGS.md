@@ -151,4 +151,23 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 
 ---
 
+## Phase 3 — Architecture (in progress, 2026-05-25)
+
+### Decisions (ADRs)
+- **ADR-0001: Astro** (framework) — chose the right-sized static-content tool over Next.js. Probed the Next.js case first (asked which portfolio use cases favor Next: live AI demos, server forms, auth, live GitHub-activity data) before deciding. Documented the **revisit trigger**: if live demos / live data become real near-term needs → migrate to Next.js + Vercel.
+- **ADR-0002: Astro content collections** (content model) — typed markdown collections, content in git, serves living-site iteration. Revisit if a non-technical collaborator needs to edit content.
+- **ADR-0003: GitHub Pages + GitHub Actions** (hosting/deploy) — $0, on-theme, automated deploy = the S01 pipeline + part of the showcase. Open question: custom domain (deferred).
+
+### Skills built
+- `adr-new` — scaffolds ADRs in house format (Context / Decision / Rationale / Alternatives-with-reasons / Consequences + **revisit trigger**). Path: `~/.claude/skills/adr-new/SKILL.md`. **Marginal-ROI build** (only 2 more ADRs this phase) — built anyway because ADRs recur across phases + future projects and it keeps the format consistent. The "revisit trigger" convention is the key craft: an ADR names the condition that would reverse it, turning it into a tripwire, not a tombstone.
+
+### Insight worth keeping
+- The framework decision was the clearest "understand tradeoffs" PM rep so far: the right call wasn't "the better framework" in the abstract — it was right-tool-for-context (static content site + GitHub Pages + living iteration) with a documented condition for reversal. The **hosting choice gated the framework's value** (GitHub Pages = static-only neutralizes Next.js's server advantages) — a reminder that architecture decisions are coupled, not independent.
+- Reflection debt still outstanding (Phase 0 + Phase 2 + now Phase 3 Stop-&-reflect). Compounding.
+
+### Pending in Phase 3
+- (Optional) "smallest working skeleton" plan — bleeds into Phase 5 (it's story S01)
+
+---
+
 <!-- New phase entries get appended below. Don't edit prior entries — if you want to revise an insight, write the revision as a new entry that references the old one. Append-only is what makes this useful in Phase 10 debrief. -->
