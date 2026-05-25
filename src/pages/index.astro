@@ -5,8 +5,9 @@ const name = "Roberto Bautista";
 const positioning =
   "AI PM — I help enterprises go from AI pilots to shipped, adopted products.";
 
-// JSON-LD Person (ADR-0004: machine/agent readability). Generated from the
-// same constants the page renders, so it can't drift from the visible content.
+const linkedin = "https://www.linkedin.com/in/robertobautistaf/";
+const github = "https://github.com/RobertoBautistaFregoso";
+
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -14,8 +15,7 @@ const personJsonLd = {
   jobTitle: "AI Product Manager",
   description: positioning,
   url: "https://robertobautistafregoso.github.io/",
-  sameAs: ["https://github.com/RobertoBautistaFregoso"],
-  // TODO: add LinkedIn URL to sameAs when available.
+  sameAs: [linkedin, github],
 };
 ---
 
@@ -23,6 +23,17 @@ const personJsonLd = {
   <main>
     <h1>{name}</h1>
     <p class="lead">{positioning}</p>
+
+    <section class="contact" aria-labelledby="contact-heading">
+      <h2 id="contact-heading">Get in touch</h2>
+      <p>The best way to reach me is LinkedIn.</p>
+      <a class="cta" href={linkedin} target="_blank" rel="noopener noreferrer">
+        Connect on LinkedIn
+      </a>
+      <p class="contact-secondary">
+        Also on <a href={github} target="_blank" rel="noopener noreferrer">GitHub</a>.
+      </p>
+    </section>
   </main>
   <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
 </Layout>
