@@ -204,12 +204,13 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 - Benign: GitHub's own actions (checkout/setup-node/upload-artifact @v4) run on Node 20, deprecated → forced to Node 24 by June 2026. Non-blocking; bump versions when convenient.
 
 ### Resumption — next session, in order:
-0. **S01 ✅, S02 ✅, S06 ✅ shipped & live.** Live site = hero + positioning + contact CTA (LinkedIn, in JSON-LD `sameAs` too). Foundation: `Layout.astro` + `src/styles/global.css` (clean-minimal, system fonts, responsive, a11y).
-1. **S04 (featured projects) — the only remaining Must, CONTENT-GATED.** Structure built on branch `feat/S04-featured-projects` (Astro content collection + cards, builds). **To finish:** replace the 2 placeholders (`src/content/projects/_placeholder-*.md`) with real projects (set `placeholder: false`), then PR → merge → deploy → close #4. ⚠ **Expect a small merge conflict in `index.astro`** — S04 branched before S06's contact section landed on main; resolve by combining hero + projects + contact (consider `git rebase main` on the S04 branch first). Don't merge with placeholders (site is live).
-2. Shoulds: **S03 (credibility — content-gated: NDA-cleared client names/logos), S07 (resume link).**
-3. **Resume page** is the next *screen* slice after the home screen.
-4. **Content homework (gates S03/S04/S05):** 2 real projects, real testimonials, NDA-cleared client names.
-5. Per-story loop: branch → re-read AC → plan → build → verify → PR → review → merge → auto-deploy → verify live → close issue. Reuse `Layout.astro`; add a section to `index.astro`.
+0. **🎉 ALL 4 Sprint-1 MUSTS SHIPPED & LIVE: S01 ✅ S02 ✅ S04 ✅ S06 ✅.** The v0.0 "thinnest shippable portfolio" (priority.md) is live: hero + positioning + Selected work (3 projects) + LinkedIn contact CTA, all responsive/a11y/agent-readable. Foundation: `Layout.astro` + `global.css` + projects content collection (`src/content.config.ts` + `src/content/projects/*.md`).
+   - ⚠ **Project content is true-but-thin** (general statements, no specifics/outcomes). Refine `src/content/projects/*.md` with concrete results to make the cards compelling.
+   - Note: S04 finished on a fresh branch off main (not the original parked branch, which was deleted) to avoid the index.astro merge conflict with S06. Lesson: parallel feature branches editing the same file diverge — branch from latest main, or rebase.
+1. Remaining Sprint 1: **S03 (credibility — content-gated: NDA-cleared client names/logos), S07 (resume link), S05 (testimonials — content-gated).** All Should/Could.
+2. **Resume page** = next *screen* slice (its own set of stories).
+3. **Content homework:** refine the 3 project blurbs with specifics; gather testimonials; decide which client names are public.
+4. Per-story loop: branch from latest `main` → re-read AC → plan → build → verify → PR → review → merge → auto-deploy → verify live → close issue. Reuse `Layout.astro`; add a section to `index.astro`.
 2. Then Sprint 1 Shoulds: S03 (credibility), S07 (resume link). S05 (testimonials) is content-gated (need real testimonials first).
 3. Resume page is the next *screen* slice after the home screen.
 4. Content still owed by Roberto: real testimonials + NDA-cleared client names/logos (gates S03/S05 content).
