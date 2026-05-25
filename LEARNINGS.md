@@ -1,5 +1,7 @@
 # LEARNINGS
 
+> **A build-in-public log.** This is the honest, unvarnished record of building this site — and learning the agentic SDLC — end to end. It deliberately includes the pivots, course-corrections, and things I got wrong the first time. That's the point: the value is in showing *how* the thinking evolved and self-corrected, not in pretending it was linear. If you're reading this as a hiring manager, client, or fellow builder — the visible self-correction *is* the signal.
+
 Append-only log. One entry per playbook phase. Written by Roberto in his own voice — Claude critiques, doesn't draft.
 
 Format per entry:
@@ -186,6 +188,34 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 ### Pending in Phase 4
 - Project board (Backlog/Next/In Progress/In Review/Done) — *optional* for solo; mostly a showcase signal for when the repo goes public
 - **First hook: commit → LEARNINGS** (via `update-config`) — the first *hook*, distinct from a skill (and the skill-vs-hook distinction is literally one of the Phase 0 reflection-debt items)
+
+---
+
+## Phase 5 — Build Loop (in progress, 2026-05-25)
+
+**Branch discipline now active:** code goes on per-story feature branches + PRs, no direct `main` commits (per CONTRIBUTING).
+
+### S01 — Walking skeleton + deploy (IN PROGRESS, branch `feat/S01-walking-skeleton`)
+
+Done:
+- Astro 6.3 scaffolded — `package.json`, `astro.config.mjs` (`base: '/'`), `tsconfig.json`, `src/pages/index.astro` (placeholder: name + one line; real hero is S02)
+- GitHub Actions deploy workflow (`.github/workflows/deploy.yml`) — withastro/action + deploy-pages
+- `README.md` documents run/build/deploy
+- `npm run build` passes locally — **AC1 met**
+- Repo renamed → `robertobautistafregoso.github.io` (D2=b, clean root URL)
+
+Gated / deferred:
+- **Go-live (AC2/AC3) is gated on the public flip** — D1=(c): deliberately deferred to decide the LEARNINGS-curation question with a clear head (private journal vs public showcase; LEARNINGS is already in git history, so the flip is semi-irreversible — see Phase 5 "Decision 1" discussion).
+
+### Resumption — next session, in order:
+1. `git checkout feat/S01-walking-skeleton`
+2. (Optional) `npm run dev` → eyeball placeholder at `localhost:4321`
+3. **Decide deferred D1** — LEARNINGS curation: (a) accept public as-is, (b) curate/reframe before flip, or (c) two-repo split (private learning repo + public site repo). Lean: keep raw journal private, deliver build-in-public via a curated narrative.
+4. Flip public (`gh repo edit --visibility public`) + enable Pages → source "GitHub Actions"
+5. PR S01 → `/review` + `/security-review` → merge to `main` → workflow deploys → verify live → close issue #1
+6. Then Sprint 1 remainder: S02 (hero), S04 (projects), S06 (CTA)
+
+### Outstanding reflection debt (compounding): Phase 0 + Phase 2 + Phase 3 Stop-&-reflect, still unpaid.
 
 ---
 
