@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
 const name = "Roberto Bautista";
 const positioning =
@@ -7,6 +8,10 @@ const positioning =
 
 const linkedin = "https://www.linkedin.com/in/robertobautistaf/";
 const github = "https://github.com/RobertoBautistaFregoso";
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -23,6 +28,21 @@ const personJsonLd = {
   <main>
     <h1>{name}</h1>
     <p class="lead">{positioning}</p>
+
+    <section class="projects" aria-labelledby="projects-heading">
+      <h2 id="projects-heading">Selected work</h2>
+      <ul class="project-list" role="list">
+        {
+          projects.map((project) => (
+            <li class="project-card">
+              <h3 class="project-title">{project.data.title}</h3>
+              <p class="project-summary">{project.data.summary}</p>
+              <p class="project-role">{project.data.role}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
 
     <section class="contact" aria-labelledby="contact-heading">
       <h2 id="contact-heading">Get in touch</h2>
