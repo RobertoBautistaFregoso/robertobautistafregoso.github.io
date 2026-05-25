@@ -195,25 +195,19 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 
 **Branch discipline now active:** code goes on per-story feature branches + PRs, no direct `main` commits (per CONTRIBUTING).
 
-### S01 — Walking skeleton + deploy (IN PROGRESS, branch `feat/S01-walking-skeleton`)
+### S01 — Walking skeleton + deploy ✅ DONE — LIVE at https://robertobautistafregoso.github.io/
 
-Done:
-- Astro 6.3 scaffolded — `package.json`, `astro.config.mjs` (`base: '/'`), `tsconfig.json`, `src/pages/index.astro` (placeholder: name + one line; real hero is S02)
-- GitHub Actions deploy workflow (`.github/workflows/deploy.yml`) — withastro/action + deploy-pages
-- `README.md` documents run/build/deploy
-- `npm run build` passes locally — **AC1 met**
-- Repo renamed → `robertobautistafregoso.github.io` (D2=b, clean root URL)
-
-Gated / deferred:
-- **Go-live (AC2/AC3) is gated on the public flip** — D1=(c): deliberately deferred to decide the LEARNINGS-curation question with a clear head (private journal vs public showcase; LEARNINGS is already in git history, so the flip is semi-irreversible — see Phase 5 "Decision 1" discussion).
+- Astro 6.3 scaffolded; GitHub Actions → GitHub Pages deploy workflow; README; minimal placeholder page (name + one line — real hero is S02)
+- Repo renamed → `robertobautistafregoso.github.io` (D2=b); repo flipped **public** (D1 resolved as **(b)**: public + a build-in-public framing intro on LEARNINGS so the candor reads as intentional self-correction; the two-repo split was judged not worth it)
+- All 4 AC met; issue #1 closed; PR #8 merged
+- **Deploy bug + fix (PR #9):** first deploy *failed* — the CI runner used Node 20 (withastro/action default) but Astro 6 requires Node ≥22.12. It built fine locally on Node 25 → classic **local ≠ CI** gotcha. Fix: pin `node-version: 22` in the workflow. Recurring theme: verify against the *real* runtime, not just your machine — same shape as env-audit's "eval against your actual machine ≠ documentation," and the run_loop harness lesson. Three times now this pattern has bitten; it's the durable Phase-0-through-5 meta-lesson.
+- Benign: GitHub's own actions (checkout/setup-node/upload-artifact @v4) run on Node 20, deprecated → forced to Node 24 by June 2026. Non-blocking; bump versions when convenient.
 
 ### Resumption — next session, in order:
-1. `git checkout feat/S01-walking-skeleton`
-2. (Optional) `npm run dev` → eyeball placeholder at `localhost:4321`
-3. **Decide deferred D1** — LEARNINGS curation: (a) accept public as-is, (b) curate/reframe before flip, or (c) two-repo split (private learning repo + public site repo). Lean: keep raw journal private, deliver build-in-public via a curated narrative.
-4. Flip public (`gh repo edit --visibility public`) + enable Pages → source "GitHub Actions"
-5. PR S01 → `/review` + `/security-review` → merge to `main` → workflow deploys → verify live → close issue #1
-6. Then Sprint 1 remainder: S02 (hero), S04 (projects), S06 (CTA)
+1. Sprint 1 remaining Musts: **S02 (hero)** → **S04 (featured projects)** → **S06 (CTA)**. Per story: `git checkout -b feat/S0N-slug` → re-read AC → plan → build → `npm run build` + local verify → PR → review → merge → deploy auto-runs → verify live → close issue. (The deploy pipeline now works — each merge to main auto-publishes.)
+2. Then Sprint 1 Shoulds: S03 (credibility), S07 (resume link). S05 (testimonials) is content-gated (need real testimonials first).
+3. Resume page is the next *screen* slice after the home screen.
+4. Content still owed by Roberto: real testimonials + NDA-cleared client names/logos (gates S03/S05 content).
 
 ### Outstanding reflection debt (compounding): Phase 0 + Phase 2 + Phase 3 Stop-&-reflect, still unpaid.
 
