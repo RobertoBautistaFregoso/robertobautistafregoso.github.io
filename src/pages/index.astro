@@ -1,22 +1,28 @@
 ---
-// S01 placeholder — name + one line, just to prove the pipeline.
-// The real hero (positioning, layout) is S02.
+import Layout from '../layouts/Layout.astro';
+
 const name = "Roberto Bautista";
-const tagline = "AI Product Manager — building AI-native products.";
+const positioning =
+  "AI PM — I help enterprises go from AI pilots to shipped, adopted products.";
+
+// JSON-LD Person (ADR-0004: machine/agent readability). Generated from the
+// same constants the page renders, so it can't drift from the visible content.
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name,
+  jobTitle: "AI Product Manager",
+  description: positioning,
+  url: "https://robertobautistafregoso.github.io/",
+  sameAs: ["https://github.com/RobertoBautistaFregoso"],
+  // TODO: add LinkedIn URL to sameAs when available.
+};
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{name}</title>
-    <meta name="description" content={tagline} />
-  </head>
-  <body>
-    <main>
-      <h1>{name}</h1>
-      <p>{tagline}</p>
-    </main>
-  </body>
-</html>
+<Layout title={name} description={positioning}>
+  <main>
+    <h1>{name}</h1>
+    <p class="lead">{positioning}</p>
+  </main>
+  <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+</Layout>
