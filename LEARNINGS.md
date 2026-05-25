@@ -204,11 +204,12 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 - Benign: GitHub's own actions (checkout/setup-node/upload-artifact @v4) run on Node 20, deprecated → forced to Node 24 by June 2026. Non-blocking; bump versions when convenient.
 
 ### Resumption — next session, in order:
-0. **S01 ✅ + S02 ✅ shipped & live** (hero + positioning + JSON-LD Person). Foundation: `Layout.astro` + `src/styles/global.css` (clean-minimal, system fonts, responsive, a11y).
-1. **S04 structure built on branch `feat/S04-featured-projects` (NOT merged — content-gated).** Astro content collection (`src/content.config.ts`) + project cards render; build passes. The "this portfolio" entry is real; 2 placeholder entries (`src/content/projects/_placeholder-*.md`) need replacing with real projects. **To finish S04:** edit those 2 files with real projects (set `placeholder: false`), then PR → merge → deploy → close #4. (Don't merge with placeholders — site is live.)
-2. **S06 (CTA)** — last Sprint-1 Must; not content-gated, can be done anytime. `git checkout -b feat/S06-reach-out` from main.
-3. Shoulds: S03 (credibility), S07 (resume link). S05 (testimonials) content-gated.
-4. Per-story loop: branch → re-read AC → plan → build → verify → PR → review → merge → auto-deploy → verify live → close issue. Reuse `Layout.astro`; add a section to `index.astro`.
+0. **S01 ✅, S02 ✅, S06 ✅ shipped & live.** Live site = hero + positioning + contact CTA (LinkedIn, in JSON-LD `sameAs` too). Foundation: `Layout.astro` + `src/styles/global.css` (clean-minimal, system fonts, responsive, a11y).
+1. **S04 (featured projects) — the only remaining Must, CONTENT-GATED.** Structure built on branch `feat/S04-featured-projects` (Astro content collection + cards, builds). **To finish:** replace the 2 placeholders (`src/content/projects/_placeholder-*.md`) with real projects (set `placeholder: false`), then PR → merge → deploy → close #4. ⚠ **Expect a small merge conflict in `index.astro`** — S04 branched before S06's contact section landed on main; resolve by combining hero + projects + contact (consider `git rebase main` on the S04 branch first). Don't merge with placeholders (site is live).
+2. Shoulds: **S03 (credibility — content-gated: NDA-cleared client names/logos), S07 (resume link).**
+3. **Resume page** is the next *screen* slice after the home screen.
+4. **Content homework (gates S03/S04/S05):** 2 real projects, real testimonials, NDA-cleared client names.
+5. Per-story loop: branch → re-read AC → plan → build → verify → PR → review → merge → auto-deploy → verify live → close issue. Reuse `Layout.astro`; add a section to `index.astro`.
 2. Then Sprint 1 Shoulds: S03 (credibility), S07 (resume link). S05 (testimonials) is content-gated (need real testimonials first).
 3. Resume page is the next *screen* slice after the home screen.
 4. Content still owed by Roberto: real testimonials + NDA-cleared client names/logos (gates S03/S05 content).
