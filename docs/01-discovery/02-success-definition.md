@@ -10,7 +10,7 @@
 > This portfolio is a success if, **2 weeks after first shipping:**
 >
 > 1. **Live + shared** — it's at a real public URL, on my LinkedIn, and I've sent it to ≥ 5 people (I'm proud enough to).
-> 2. **Process visible** — the public repo shows the agentic GitHub-native workflow (feature branches, PRs, issues, project board); the *how* is part of the showcase.
+> 2. **Process genuinely followed** — the repo is public and genuinely built via the agentic GitHub-native workflow (feature branches, PRs, issues, project board), discoverable by anyone who checks my GitHub. *(On-site surfacing — repo links per project + a "how I built this" narrative — is deferred to V2; see PRD §7.)*
 > 3. **Living, not static** — I've already shipped ≥ 1 post-launch iteration (a new project, a POV piece, or a refinement) via a PR — proving I actually maintain it.
 > 4. **It moves someone** — ≥ 1 viewer tells me, unprompted, that it changed their impression of me, OR it generates a concrete inbound (interview, intro, or consulting inquiry).
 
@@ -19,7 +19,7 @@
 ## What each check measures
 
 1. **Shipped + owned** — did it actually go live and do I stand behind it? (The basic bar most side projects never clear.)
-2. **The medium is the message** — the visible workflow trail is the differentiating proof; if it's hidden, half the value is gone.
+2. **The medium is the message** — the workflow trail is the differentiating proof. In v0 it lives in the public repo (discoverable, not yet surfaced on-site); surfacing it across multiple projects is the V2 upgrade. The discipline of *actually following* the workflow is the v0 bar.
 3. **Behavior, not artifact** — the living-site bet. If I don't iterate within 2 weeks, the "continuously evolved via agentic workflow" story is just a claim. This is the most likely way it quietly fails.
 4. **Impact signal** — leading indicator that the site does its job (move a decision-maker). Partly outside my control, so it's a bonus signal, not the core bar.
 
