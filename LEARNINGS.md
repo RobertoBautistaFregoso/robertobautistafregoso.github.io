@@ -133,4 +133,22 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 
 ---
 
+## Phase 2 — PRD & User Stories (in progress, 2026-05-25)
+
+### Skills built
+- `story-writer` — emits user stories in house format (Mike Cohn + Gherkin AC + Non-goals + shared DoD reference). Path: `~/.claude/skills/story-writer/SKILL.md`. Built **lightweight** (direct SKILL.md, no skill-creator eval harness) and validated by real use on stories S02–S07.
+- `ac-linter` — checks story files against the same AC-quality rules story-writer enforces (testable Gherkin "then", specific role, value-bearing "so that", non-goals present, DoD referenced, right-sized). Path: `~/.claude/skills/ac-linter/SKILL.md`. **Caught 2 real issues on first run** (an untestable "distinguishing angle" AC, and a build constraint masquerading as a visitor AC) — proof the lint-then-commit gate works. story-writer + ac-linter are a deliberate emitter/checker pair sharing one rule set.
+
+### Build-a-skill judgment notes (worth keeping)
+- **Skipped `pm-discovery-kickoff`** (playbook's Phase 1 build-a-skill): discovery happens once per project → ~zero in-project reuse. Its value is external (client work), so building it now would be speculative. Build skills where the pattern *repeats*.
+- **Built `story-writer`** instead, because it DOES repeat (6 stories now + every story in Phase 5) and it fills a real gap over the generic `user-story` plugin (auto-enforces my DoD + non-goals + house format).
+- **Right-sized the build:** no heavy eval/run_loop. That rigor fit env-audit (reads private config, redaction, edge cases, real risk); it's overkill for a template-emitter. Effort should match complexity + risk. Over-engineering a simple skill is its own anti-pattern.
+- Lesson: the playbook's "build a skill every phase" is a prompt, not a mandate. The PM muscle is deciding *which* skills earn their keep and *how much* rigor each deserves.
+
+### Pending in Phase 2
+- MoSCoW prioritization → `priority.md`
+- One-pager → `one-pager.md`
+
+---
+
 <!-- New phase entries get appended below. Don't edit prior entries — if you want to revise an insight, write the revision as a new entry that references the old one. Append-only is what makes this useful in Phase 10 debrief. -->
