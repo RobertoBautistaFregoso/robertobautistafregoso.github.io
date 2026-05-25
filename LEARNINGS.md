@@ -171,4 +171,22 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 
 ---
 
+## Phase 4 — GitHub Setup & Sprint Plan (in progress, 2026-05-25)
+
+### Done
+- **Private GitHub repo created + pushed** (`RobertoBautistaFregoso/sdlc-demo-v2`) — 10 commits finally off the laptop. Public flip deferred to Phase 5 (forced by free GitHub Pages anyway, and that's when there's a real site + a conscious LEARNINGS-curation decision).
+- **Labels** (`mvp`/`v2`/`chore`/`docs`/`spike` + GitHub defaults) + **milestone `v0.1.0`**.
+- **7 stories → 7 GitHub Issues** (#1–#7), labeled `mvp`, milestoned, AC as checklists.
+- **Sprint 1 plan**: the 4 Musts (S01/S02/S04/S06 = issues #1/#2/#4/#6).
+- **CONTRIBUTING.md**: branch/commit/PR conventions + the Phase 5 per-story loop.
+
+### Skills built
+- `story-to-issue` — story file → `gh issue create` (title, AC checklist, label, milestone). Path: `~/.claude/skills/story-to-issue/SKILL.md`. Used immediately on all 7 stories (7 uses → clears the ROI bar on first run).
+
+### Pending in Phase 4
+- Project board (Backlog/Next/In Progress/In Review/Done) — *optional* for solo; mostly a showcase signal for when the repo goes public
+- **First hook: commit → LEARNINGS** (via `update-config`) — the first *hook*, distinct from a skill (and the skill-vs-hook distinction is literally one of the Phase 0 reflection-debt items)
+
+---
+
 <!-- New phase entries get appended below. Don't edit prior entries — if you want to revise an insight, write the revision as a new entry that references the old one. Append-only is what makes this useful in Phase 10 debrief. -->
