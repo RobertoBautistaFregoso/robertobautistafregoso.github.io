@@ -189,4 +189,32 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 
 ---
 
+## Phase 5 — Build Loop (in progress, 2026-05-25)
+
+**Branch discipline now active:** code goes on per-story feature branches + PRs, no direct `main` commits (per CONTRIBUTING).
+
+### S01 — Walking skeleton + deploy (IN PROGRESS, branch `feat/S01-walking-skeleton`)
+
+Done:
+- Astro 6.3 scaffolded — `package.json`, `astro.config.mjs` (`base: '/'`), `tsconfig.json`, `src/pages/index.astro` (placeholder: name + one line; real hero is S02)
+- GitHub Actions deploy workflow (`.github/workflows/deploy.yml`) — withastro/action + deploy-pages
+- `README.md` documents run/build/deploy
+- `npm run build` passes locally — **AC1 met**
+- Repo renamed → `robertobautistafregoso.github.io` (D2=b, clean root URL)
+
+Gated / deferred:
+- **Go-live (AC2/AC3) is gated on the public flip** — D1=(c): deliberately deferred to decide the LEARNINGS-curation question with a clear head (private journal vs public showcase; LEARNINGS is already in git history, so the flip is semi-irreversible — see Phase 5 "Decision 1" discussion).
+
+### Resumption — next session, in order:
+1. `git checkout feat/S01-walking-skeleton`
+2. (Optional) `npm run dev` → eyeball placeholder at `localhost:4321`
+3. **Decide deferred D1** — LEARNINGS curation: (a) accept public as-is, (b) curate/reframe before flip, or (c) two-repo split (private learning repo + public site repo). Lean: keep raw journal private, deliver build-in-public via a curated narrative.
+4. Flip public (`gh repo edit --visibility public`) + enable Pages → source "GitHub Actions"
+5. PR S01 → `/review` + `/security-review` → merge to `main` → workflow deploys → verify live → close issue #1
+6. Then Sprint 1 remainder: S02 (hero), S04 (projects), S06 (CTA)
+
+### Outstanding reflection debt (compounding): Phase 0 + Phase 2 + Phase 3 Stop-&-reflect, still unpaid.
+
+---
+
 <!-- New phase entries get appended below. Don't edit prior entries — if you want to revise an insight, write the revision as a new entry that references the old one. Append-only is what makes this useful in Phase 10 debrief. -->
