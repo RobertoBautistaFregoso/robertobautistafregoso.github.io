@@ -38,6 +38,15 @@ const personJsonLd = {
               <h3 class="project-title">{project.data.title}</h3>
               <p class="project-summary">{project.data.summary}</p>
               <p class="project-role">{project.data.role}</p>
+              {
+                project.data.tags.length > 0 && (
+                  <ul class="project-tags">
+                    {project.data.tags.map((tag) => (
+                      <li class="tag">{tag}</li>
+                    ))}
+                  </ul>
+                )
+              }
             </li>
           ))
         }
