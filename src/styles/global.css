@@ -3,16 +3,11 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
-@font-face {
-  font-family: 'Geist Pixel Square';
-  src: url('/fonts/GeistPixel-Square.woff2') format('woff2');
-  font-display: swap;
-}
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    /* Light mode — warm, minimal, cream-tinted (Unknown Arts aesthetic) */
+    /* Light mode — warm, minimal, cream-tinted */
     --background: oklch(0.98 0.004 80);
     --foreground: oklch(0.15 0.01 60);
     --card: oklch(0.96 0.005 80);
@@ -35,7 +30,7 @@
 }
 
 .dark {
-    /* Dark mode — rich warm black (matching the Framer site screenshots) */
+    /* Dark mode — rich warm black */
     --background: oklch(0.14 0.01 60);
     --foreground: oklch(0.92 0.01 80);
     --card: oklch(0.18 0.01 60);
@@ -59,7 +54,6 @@
 @theme inline {
     --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
-    --font-pixel: 'Geist Pixel Square', ui-monospace, monospace;
     --color-ring: var(--ring);
     --color-input: var(--input);
     --color-border: var(--border);
