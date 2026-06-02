@@ -24,7 +24,8 @@ Need to record: the stack jump, the package-manager switch, and the IP posture.
 1. **Adopt Pat's front-end scaffold** (Astro 5, React 19 islands, Tailwind 4 via Vite plugin, shadcn base-nova, Geist fonts, OKLCH tokens, sidebar app-shell, generative-art Lab engine) and **replace all content** with Roberto's.
 2. **Switch package manager to pnpm** (matches Pat's lockfile; avoids resolution drift).
 3. **Strip Writing + Community** entirely (content, pages, data, components, scripts, collection).
-4. **IP posture:** keep visible **attribution to Pat** in the Colophon; do **not** republish any of his written content; treat his code as inspiration adapted for personal use. Revisit if the site ever goes commercial.
+4. **IP posture:** do **not** republish any of his written content; treat his code as inspiration adapted for personal use. Revisit if the site ever goes commercial.
+   - *Update (S10, post-review):* a visible Colophon attribution to Pat was added, then **removed at Roberto's request**. IP posture now rests on non-commercial/personal use only, not attribution. Revisit if the site ever goes commercial.
 
 ## Rationale
 
@@ -44,7 +45,7 @@ Need to record: the stack jump, the package-manager switch, and the IP posture.
 - **Positive:** rich multi-section site with theming, a design system, and a generative-art Lab arrives fast; agentic-SDLC tooling patterns come along for free; content work is the main remaining effort.
 - **Accepted tradeoffs:**
   - Discards the v0.0 Fraunces + Inter editorial look (preserved in git history).
-  - Adopts unlicensed code → mitigated by attribution + non-commercial use, but not eliminated. **Revisit trigger:** any commercial use, or if Pat objects → re-derive or seek explicit permission.
+  - Adopts unlicensed code → mitigated by non-commercial/personal use only (attribution was considered then removed at Roberto's request), not eliminated. **Revisit trigger:** any commercial use, or if Pat objects → re-derive or seek explicit permission.
   - Heavier dependency tree (React, motion, shadcn) and a new package manager (pnpm) vs. the prior Astro-only build.
   - Many content slots ship as placeholders until real content is supplied (profile photo, project thumbnails, About bio, resume data, testimonials, NDA-cleared client names).
 - **Revisit when:** the site goes commercial, Pat objects, or the lifted scaffold proves heavier to maintain than its value.
