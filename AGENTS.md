@@ -4,11 +4,7 @@ Cross-agent technical conventions for this repository. For **process**, defer to
 
 ## Project Overview
 
-Roberto Bautista's personal portfolio — an AI Product Manager's site, and a hands-on practice project for the agentic SDLC (idea → PRD → stories → build → ship → iterate with Claude Code + GitHub).
-
-The front-end scaffold (Astro + Tailwind + shadcn app-shell, OKLCH theming, generative-art Lab) is **adapted, with attribution, from [Patrick Morgan's personal site](https://github.com/itspatmorgan/itspatmorgan.github.io)** (see ADR-0005). Content is Roberto's own. The site should feel warm, minimal, editorial, and professional.
-
-When adapting a section that still needs Pat's original implementation as a reference, re-clone the upstream repo (it's public) rather than committing his content here.
+Roberto Bautista's personal portfolio — an AI Product Manager's site, and a hands-on practice project for the agentic SDLC (idea → PRD → stories → build → ship → iterate with Claude Code + GitHub). The site should feel warm, minimal, editorial, and professional.
 
 ## Tech Stack
 
