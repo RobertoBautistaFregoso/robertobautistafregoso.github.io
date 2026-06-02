@@ -1,0 +1,64 @@
+---
+import "../styles/global.css";
+import { siteConfig } from "@/data/site-config";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+}
+
+const { title, description, image, canonicalUrl, noindex = false } = Astro.props;
+
+const pageTitle = title ?? siteConfig.title;
+const pageDescription = description ?? siteConfig.description;
+const canonicalURL = canonicalUrl ?? new URL(Astro.url.pathname, siteConfig.url).toString();
+const ogImage = new URL(image ?? "/images/placeholder.svg", siteConfig.url).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={pageDescription} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <title>{pageTitle}</title>
+
+    {/* Open Graph */}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL.toString()} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={ogImage} />
+
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {/* Prevent flash of wrong theme */}
+    <script is:inline>
+      const theme = localStorage.getItem("theme");
+      if (
+        theme === "dark" ||
+        (!theme &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
+      }
+
+      if (localStorage.getItem("sidebar-collapsed") === "true") {
+        document.documentElement.classList.add("sidebar-collapsed");
+      }
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

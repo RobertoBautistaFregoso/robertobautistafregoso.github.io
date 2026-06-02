@@ -1,68 +1,67 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import PageLayout from "@/layouts/PageLayout.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { siteConfig } from "@/data/site-config";
+import { getCollection } from "astro:content";
 
-const name = "Roberto Bautista";
-const positioning =
-  "AI PM — I help enterprises go from AI pilots to shipped, adopted products.";
-
-const linkedin = "https://www.linkedin.com/in/robertobautistaf/";
-const github = "https://github.com/RobertoBautistaFregoso";
-
-const projects = (await getCollection('projects')).sort(
-  (a, b) => a.data.order - b.data.order,
+const featuredProjects = (await getCollection("projects", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.sortOrder - b.data.sortOrder,
 );
+
+const homeShell = "mx-auto w-full max-w-[1400px] px-6 sm:px-8 lg:px-14";
+const homeSection = `${homeShell} py-12 sm:py-14 lg:py-16`;
+const homeSectionHeader = "mb-7 flex items-center justify-between";
+const homeCardGrid = "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6";
 
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  name,
+  name: siteConfig.name,
   jobTitle: "AI Product Manager",
-  description: positioning,
-  url: "https://robertobautistafregoso.github.io/",
-  sameAs: [linkedin, github],
+  description: siteConfig.description,
+  url: siteConfig.url,
+  sameAs: [siteConfig.social.linkedin, siteConfig.social.github],
 };
 ---
 
-<Layout title={name} description={positioning}>
-  <main>
-    <h1>{name}</h1>
-    <p class="lead">{positioning}</p>
-
-    <section class="projects" aria-labelledby="projects-heading">
-      <h2 id="projects-heading">Selected work</h2>
-      <ul class="project-list" role="list">
-        {
-          projects.map((project) => (
-            <li class="project-card">
-              <h3 class="project-title">{project.data.title}</h3>
-              <p class="project-summary">{project.data.summary}</p>
-              <p class="project-role">{project.data.role}</p>
-              {
-                project.data.tags.length > 0 && (
-                  <ul class="project-tags">
-                    {project.data.tags.map((tag) => (
-                      <li class="tag">{tag}</li>
-                    ))}
-                  </ul>
-                )
-              }
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <section class="contact" aria-labelledby="contact-heading">
-      <h2 id="contact-heading">Get in touch</h2>
-      <p>The best way to reach me is LinkedIn.</p>
-      <a class="cta" href={linkedin} target="_blank" rel="noopener noreferrer">
-        Connect on LinkedIn
-      </a>
-      <p class="contact-secondary">
-        Also on <a href={github} target="_blank" rel="noopener noreferrer">GitHub</a>.
+<PageLayout>
+  {/* ── Hero ────────────────────────────────────────────── */}
+  <section class={`${homeShell} pt-12 pb-6 sm:pt-20 sm:pb-10`}>
+    <div class="max-w-2xl">
+      <h1 class="mb-6 text-4xl font-medium leading-[1.15] tracking-tight sm:text-5xl">
+        {siteConfig.name}
+      </h1>
+      <p class="text-lg leading-relaxed text-muted-foreground">
+        {siteConfig.description}
       </p>
-    </section>
-  </main>
+    </div>
+  </section>
+
+  {/* ── Work ─────────────────────────────────────────────── */}
+  <section class={`${homeSection} pb-24`}>
+    <div class={homeSectionHeader}>
+      <p class="font-mono text-xs uppercase tracking-widest text-muted-foreground">Work</p>
+      <a href="/work" class="text-xs text-muted-foreground transition-colors hover:text-foreground">View all →</a>
+    </div>
+    <div class={homeCardGrid}>
+      {featuredProjects.slice(0, 3).map((project, i) => (
+        <ProjectCard
+          title={project.data.title}
+          description={project.data.description}
+          skills={project.data.skills}
+          thumbnail={project.data.thumbnail}
+          thumbnailDark={project.data.thumbnailDark}
+          thumbnailWide={project.data.thumbnailWide}
+          thumbnailWideDark={project.data.thumbnailWideDark}
+          slug={project.id}
+          index={i}
+          variant="compact"
+          squareDesktop
+          showDescription
+        />
+      ))}
+    </div>
+  </section>
+
   <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
-</Layout>
+</PageLayout>
