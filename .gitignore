@@ -12,6 +12,7 @@
 
 # Per-user Claude Code settings (personal, not shared with collaborators)
 .claude/settings.local.json
+.claude/launch.json
 
 # Dependencies & build output
 node_modules/

@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agentic SDLC — Process × Skills Map</title>
+    <script>
+      window.process = { env: { NODE_ENV: "production" } };
+      window.EXCALIDRAW_ASSET_PATH =
+        "https://unpkg.com/@excalidraw/excalidraw@0.17.6/dist/";
+    </script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      #wrap {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      #bar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 8px 12px;
+        background: #1c1917;
+        color: #fafaf9;
+      }
+      #bar strong {
+        margin-right: 6px;
+      }
+      #bar button {
+        font: inherit;
+        font-size: 13px;
+        padding: 5px 10px;
+        border: 1px solid #44403c;
+        background: #292524;
+        color: #fafaf9;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      #bar button:hover {
+        background: #44403c;
+      }
+      #excalidraw {
+        flex: 1;
+        min-height: 0;
+      }
+      .legend {
+        font-size: 12px;
+        color: #a8a29e;
+        margin-left: auto;
+        max-width: 520px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <div id="bar">
+        <strong>Agentic SDLC — Process × Skills</strong>
+        <button data-cam="all">Fit all</button>
+        <button data-cam="0">P0</button>
+        <button data-cam="1">P1</button>
+        <button data-cam="2">P2</button>
+        <button data-cam="3">P3</button>
+        <button data-cam="4">P4</button>
+        <button data-cam="5">P5</button>
+        <button id="fs">⛶ Fullscreen</button>
+        <span class="legend"
+          >green = skill I built · blue = skill I used · gray = tool/artifact
+          &nbsp;|&nbsp; drag to pan · scroll to zoom · double-click to edit</span
+        >
+      </div>
+      <div id="excalidraw"></div>
+    </div>
+
+    <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@excalidraw/excalidraw@0.17.6/dist/excalidraw.production.min.js"></script>
+    <script>
+      const { Excalidraw, convertToExcalidrawElements } = ExcalidrawLib;
+
+      const phases = [
+        {
+          t: "Phase 0\nFoundation",
+          built: ["env-audit"],
+          used: ["skill-creator"],
+          tools: ["CLAUDE.md", "git init"],
+        },
+        {
+          t: "Phase 1\nDiscovery & Framing",
+          built: [],
+          used: ["problem-framing-canvas", "problem-statement"],
+          tools: ["competitive scan", "success definition", "pm-discovery-kickoff: skipped (ROI)"],
+        },
+        {
+          t: "Phase 2\nPRD & Stories",
+          built: ["story-writer", "ac-linter"],
+          used: ["prd-development"],
+          tools: ["MoSCoW priority", "one-pager", "7 user stories"],
+        },
+        {
+          t: "Phase 3\nArchitecture",
+          built: ["adr-new"],
+          used: [],
+          tools: ["ADR-0001 Astro", "0002 content model", "0003 hosting", "0004 agent-ready"],
+        },
+        {
+          t: "Phase 4\nGitHub & Sprint",
+          built: ["story-to-issue"],
+          used: [],
+          tools: ["gh CLI", "7 issues", "project board", "v0.1.0 milestone", "CONTRIBUTING"],
+        },
+        {
+          t: "Phase 5\nBuild Loop",
+          built: [],
+          used: ["security-review", "review"],
+          tools: ["Astro", "GitHub Actions", "Pages", "S01/S02/S04/S06", "design pass"],
+        },
+      ];
+
+      const COL = 430,
+        BOXW = 340,
+        CHIPH = 46,
+        GAP = 14,
+        TOP = 130,
+        X0 = 80;
+      const C = {
+        phase: { bg: "#e0e7ff", st: "#3730a3", tx: "#1e1b4b" },
+        built: { bg: "#dcfce7", st: "#166534" },
+        used: { bg: "#dbeafe", st: "#1e40af" },
+        tool: { bg: "#f5f5f4", st: "#57534e" },
+      };
+
+      const sk = [];
+      sk.push({
+        type: "text",
+        x: X0,
+        y: 36,
+        text: "Agentic SDLC — Process × Skills Map",
+        fontSize: 36,
+        strokeColor: "#1c1917",
+      });
+      sk.push({
+        type: "text",
+        x: X0,
+        y: 86,
+        text: "sdlc-demo-v2 · idea → live portfolio · Phases 0–5",
+        fontSize: 18,
+        strokeColor: "#78716c",
+      });
+
+      let maxBottom = TOP;
+      phases.forEach((p, i) => {
+        const x = X0 + i * COL;
+        sk.push({
+          type: "rectangle",
+          id: "p" + i + "-title",
+          x,
+          y: TOP,
+          width: BOXW,
+          height: 80,
+          backgroundColor: C.phase.bg,
+          strokeColor: C.phase.st,
+          strokeWidth: 2,
+          roundness: { type: 3 },
+          label: { text: p.t, fontSize: 20, strokeColor: C.phase.tx },
+        });
+        let cy = TOP + 80 + 26;
+        const chip = (text, k) => {
+          sk.push({
+            type: "rectangle",
+            id: "p" + i + "-c" + cy,
+            x,
+            y: cy,
+            width: BOXW,
+            height: CHIPH,
+            backgroundColor: C[k].bg,
+            strokeColor: C[k].st,
+            roundness: { type: 3 },
+            label: { text, fontSize: 15, strokeColor: C[k].st },
+          });
+          cy += CHIPH + GAP;
+        };
+        p.built.forEach((s) => chip(s + "  · built 🛠", "built"));
+        p.used.forEach((s) => chip(s, "used"));
+        p.tools.forEach((t) => chip(t, "tool"));
+        if (cy > maxBottom) maxBottom = cy;
+        if (i < phases.length - 1) {
+          sk.push({
+            type: "arrow",
+            x: x + BOXW + 8,
+            y: TOP + 40,
+            width: COL - BOXW - 16,
+            height: 0,
+            strokeColor: "#78716c",
+            strokeWidth: 2,
+            start: { id: "p" + i + "-title" },
+            end: { id: "p" + (i + 1) + "-title" },
+          });
+        }
+      });
+
+      sk.push({
+        type: "rectangle",
+        id: "summary",
+        x: X0,
+        y: maxBottom + 30,
+        width: 1040,
+        height: 130,
+        backgroundColor: "#fffbeb",
+        strokeColor: "#b45309",
+        strokeWidth: 2,
+        roundness: { type: 3 },
+        label: {
+          text:
+            "Outcome: live, designed portfolio → robertobautistafregoso.github.io\n5 custom skills built · ~20 commits · per-story branch→PR→review→merge→auto-deploy · light/dark design system",
+          fontSize: 18,
+          strokeColor: "#7c2d12",
+        },
+      });
+
+      const elements = convertToExcalidrawElements(sk);
+
+      let api = null;
+      function App() {
+        return React.createElement(Excalidraw, {
+          initialData: {
+            elements,
+            appState: { viewBackgroundColor: "#fafaf9" },
+            scrollToContent: true,
+          },
+          excalidrawAPI: (a) => {
+            api = a;
+          },
+          theme: "light",
+        });
+      }
+      ReactDOM.createRoot(document.getElementById("excalidraw")).render(
+        React.createElement(App),
+      );
+
+      function camTo(key) {
+        if (!api) return;
+        const els = api.getSceneElements();
+        const target =
+          key === "all"
+            ? els
+            : els.filter((e) => e.id && e.id.indexOf("p" + key + "-") === 0);
+        if (target.length)
+          api.scrollToContent(target, {
+            fitToContent: true,
+            animate: true,
+            duration: 500,
+          });
+      }
+      document
+        .querySelectorAll("#bar [data-cam]")
+        .forEach((b) => b.addEventListener("click", () => camTo(b.dataset.cam)));
+      document.getElementById("fs").addEventListener("click", () => {
+        const w = document.getElementById("wrap");
+        if (!document.fullscreenElement) w.requestFullscreen && w.requestFullscreen();
+        else document.exitFullscreen && document.exitFullscreen();
+      });
+    </script>
+  </body>
+</html>
