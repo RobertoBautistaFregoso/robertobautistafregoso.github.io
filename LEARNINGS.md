@@ -212,12 +212,36 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 2. **Resume page** = next *screen* slice (its own set of stories).
 3. **Content homework:** refine the 3 project blurbs with specifics; gather testimonials; decide which client names are public.
 4. Per-story loop: branch from latest `main` → re-read AC → plan → build → verify → PR → review → merge → auto-deploy → verify live → close issue. Reuse `Layout.astro`; add a section to `index.astro`.
-2. Then Sprint 1 Shoulds: S03 (credibility), S07 (resume link). S05 (testimonials) is content-gated (need real testimonials first).
-3. Resume page is the next *screen* slice after the home screen.
-4. Content still owed by Roberto: real testimonials + NDA-cleared client names/logos (gates S03/S05 content).
+
+### ▶ FRESH-SESSION ENTRY — start here
+- **State:** v0.0 portfolio LIVE + healthy (robertobautistafregoso.github.io); design pass shipped (#13); workflow map in `docs/workflow/index.html`. Open issues: **#7 S07** (resume link, NOT content-gated), **#3 S03** (credibility, needs client names), **#5 S05** (testimonials, needs testimonials).
+- **Best next move if no new content gathered:** build **S07** (resume link) — smallest unit of progress — OR pay the reflection debt (Phase 0/2/3, overdue; the `docs/workflow/` map is a good prompt for it).
+- **If content gathered:** refine `src/content/projects/*.md` (true→specific), or finish S03 / S05.
+- **First action on resume:** `git status` (confirm clean), then read this note, then `git checkout -b feat/<story>` from latest `main`.
+- **Why this session ended:** context window hit ~80% — started fresh deliberately (state is all in git + this file, not the chat).
 
 ### Outstanding reflection debt (compounding): Phase 0 + Phase 2 + Phase 3 Stop-&-reflect, still unpaid.
 
 ---
 
 <!-- New phase entries get appended below. Don't edit prior entries — if you want to revise an insight, write the revision as a new entry that references the old one. Append-only is what makes this useful in Phase 10 debrief. -->
+
+## PIVOT — v0.1.0: rebuild on adapted Pat Morgan scaffold (S10 foundation)
+
+**Decision (ADR-0005):** lift-and-adapt the Astro 5 + React 19 + Tailwind 4 + shadcn scaffold from [itspatmorgan.github.io](https://github.com/itspatmorgan/itspatmorgan.github.io) and replace all content with Roberto's. This **supersedes the v0.0 Fraunces/Inter design pass** (still in git history). Scope **excludes Writing + Community**. Agentic-SDLC intent = "both": run it through the playbook AND adopt his `.claude`/`AGENTS.md` patterns.
+
+**S10 (this session) — shipped on `feat/s10-foundation-scaffold`:**
+- Lifted scaffold (layouts, components, ui, lab engine, styles, scripts); switched **npm → pnpm** (lockfile committed; pnpm installed locally via `npm i -g pnpm@10`, corepack not on PATH under Node 25).
+- Stripped Writing + Community (content, pages, data, components, scripts, `writing` collection).
+- Neutralized all Pat identity in shipped output: `site-config`, hero, nav (Home/About/Work/Lab), sidebar identity + LinkedIn/GitHub only, local-time (dropped "LA"/America/Los_Angeles), migrated 3 projects to the new schema with a `placeholder.svg` thumbnail, emptied `commendations`, placeholder `experience`.
+- **Stubbed** About/Resume/Lab/Style-guide pages + adapted Colophon (with **attribution to Pat** = IP mitigation); real builds deferred to their stories (S14/S15/S16/S17). Stubbing also removed the known `style-guide.astro` build-blocking syntax error.
+- `pnpm build` green (10 pages); browser-verified home + work + project detail are Pat-free.
+
+**Residual Pat strings in UNUSED lab code** (`src/lab/editorial-art/ArtCanvas.tsx` "@itspatmorgan", `src/lab/pixel-mark/MarkStates.tsx` "Patrick Morgan", a `global.css` comment, `LogoCarousel.astro` company logos) — not imported by any built page, so not shipped. Clean up during S16 (Lab) / S15 (Resume).
+
+### ▶ FRESH-SESSION ENTRY — start here (updated for v0.1.0)
+- **State:** S10 foundation built on branch `feat/s10-foundation-scaffold` (PR open). New stack live locally (pnpm + Astro 5 + shadcn). Site builds green with placeholder content; **not yet merged/deployed** as of session end.
+- **Milestone `v0.1.0` story queue:** S11 site-config/chrome polish · S12 home/hero · S13 Work (real project content + thumbnails) · S14 About · S15 Resume (supersedes old #7) · S16 Lab (rebrand editorial-art; clean residual Pat strings) · S17 Colophon + Style-guide.
+- **Backlog reconciliation TODO:** old issues #3 (S03) / #5 (S05) / #7 (S07) are superseded — relabel/close and file S11–S17.
+- **Content Roberto owes:** profile photo · project thumbnails · About bio · real resume/career data · NDA-cleared client names · testimonials ("Kind Words").
+- **First action on resume:** merge/deploy S10 if approved, then `git checkout -b feat/s11-...` from latest `main`. Run `pnpm install` (pnpm now required).

@@ -1,0 +1,36 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Header from "@/components/layout/Header.astro";
+import Sidebar from "@/components/layout/Sidebar.astro";
+import MobileNav from "@/components/layout/MobileNav.astro";
+import Footer from "@/components/layout/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+}
+
+const { title, description, image, canonicalUrl, noindex } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} image={image} canonicalUrl={canonicalUrl} noindex={noindex}>
+  {/* Mobile top bar — hidden on desktop */}
+  <Header />
+
+  {/* Mobile nav overlay */}
+  <MobileNav />
+
+  {/* App shell: sidebar + main content */}
+  <div class="md:flex md:min-h-screen">
+    <Sidebar />
+    <div class="flex flex-col flex-1 min-w-0">
+      <main class="flex-1">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </div>
+</BaseLayout>
