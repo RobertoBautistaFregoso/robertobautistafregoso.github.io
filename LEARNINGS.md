@@ -239,9 +239,15 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 
 **Residual Pat strings in UNUSED lab code** (`src/lab/editorial-art/ArtCanvas.tsx` "@itspatmorgan", `src/lab/pixel-mark/MarkStates.tsx` "Patrick Morgan", a `global.css` comment, `LogoCarousel.astro` company logos) — not imported by any built page, so not shipped. Clean up during S16 (Lab) / S15 (Resume).
 
-### ▶ FRESH-SESSION ENTRY — start here (updated for v0.1.0)
-- **State:** S10 foundation built on branch `feat/s10-foundation-scaffold` (PR open). New stack live locally (pnpm + Astro 5 + shadcn). Site builds green with placeholder content; **not yet merged/deployed** as of session end.
-- **Milestone `v0.1.0` story queue:** S11 site-config/chrome polish · S12 home/hero · S13 Work (real project content + thumbnails) · S14 About · S15 Resume (supersedes old #7) · S16 Lab (rebrand editorial-art; clean residual Pat strings) · S17 Colophon + Style-guide.
-- **Backlog reconciliation TODO:** old issues #3 (S03) / #5 (S05) / #7 (S07) are superseded — relabel/close and file S11–S17.
-- **Content Roberto owes:** profile photo · project thumbnails · About bio · real resume/career data · NDA-cleared client names · testimonials ("Kind Words").
-- **First action on resume:** merge/deploy S10 if approved, then `git checkout -b feat/s11-...` from latest `main`. Run `pnpm install` (pnpm now required).
+## S10 shipped + backlog/board set up + IA pivot (ADR-0006) + S13
+
+- **S10 merged & live** (PR #15/#16). All Pat references + dead code removed (scrubbed including the colophon attribution, at Roberto's request — ADR-0005 IP posture now = non-commercial use only). Site live at robertobautistafregoso.github.io.
+- **Backlog reconciled:** old #3/#5/#7 closed; **S11–S17 filed** (#17–#23) under the `v0.1.0` milestone. **Project board** (#1 "Portfolio v0") linked to the repo + populated (Done = S01–S07, Todo = S11–S17). Duplicate board #2 still exists — recommend deleting.
+- **IA pivot (ADR-0006):** `/work` = **career timeline** · `/lab` = **side projects** (card/write-up style) · `/resume` **dropped** · SoftServe folded into the timeline. Supersedes the inherited "projects drive /work" model + ADR-0002.
+- **S13 (this session) — `feat/s13-work-content`:** built `/work` as a real career timeline from Roberto's LinkedIn (fetched via the Claude-in-Chrome extension — WebFetch is blocked by LinkedIn's HTTP 999). Populated `experience.ts` (SoftServe ×2, Crabi ×2, Beliveo progression, earlier roles — with real metrics), rewrote `work/index.astro` (timeline + skills, no project cards), deleted `softserve-ai-pm.md` + `resume.astro`. Build green (8 pages); `/work` browser-verified.
+
+### ▶ FRESH-SESSION ENTRY — start here (updated)
+- **State:** `/work` career timeline built on `feat/s13-work-content` (PR open, **awaiting Roberto's accuracy check on `experience.ts`** before merge). Interim: side-projects (portfolio, genai) still render on home teaser + `/work/<slug>` until S12/S16.
+- **Open `v0.1.0` queue:** S11 chrome polish (#17) · **S12 home/hero (#18) — next; also reorganizes home teaser away from the old project cards** · S14 About (#20) · **S16 Lab side-projects (#23)** — relocate portfolio + genai to `/lab/<slug>`, clean residual Pat strings in any re-pulled lab code · S17 Colophon+Style-guide (#22). **S15 Résumé (#21) is superseded** by ADR-0006 (folds into /work) — close it; testimonials remain a separate content-gated item.
+- **Content Roberto still owes:** profile photo · About bio · per-side-project thumbnails + write-ups (for S16) · testimonials.
+- **First action on resume:** verify `experience.ts` accuracy → merge S13 → then `git checkout -b feat/s12-...` from latest `main`. `pnpm install` if fresh machine.
