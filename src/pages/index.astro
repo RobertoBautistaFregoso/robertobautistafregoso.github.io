@@ -1,17 +1,23 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
-import ProjectCard from "@/components/ProjectCard.astro";
 import { siteConfig } from "@/data/site-config";
-import { getCollection } from "astro:content";
-
-const featuredProjects = (await getCollection("projects", ({ data }) => !data.draft)).sort(
-  (a, b) => a.data.sortOrder - b.data.sortOrder,
-);
 
 const homeShell = "mx-auto w-full max-w-[1400px] px-6 sm:px-8 lg:px-14";
-const homeSection = `${homeShell} py-12 sm:py-14 lg:py-16`;
-const homeSectionHeader = "mb-7 flex items-center justify-between";
-const homeCardGrid = "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6";
+
+const highlights = [
+  {
+    label: "Now",
+    text: "AI Product Manager at SoftServe — turning enterprise AI pilots into products that ship and get adopted.",
+  },
+  {
+    label: "Arc",
+    text: "10+ years moving from operations to growth to product, and now to AI product.",
+  },
+  {
+    label: "Track record",
+    text: "Grew a startup's revenue 5× and shipped an MVP that cut claim times up to 5×.",
+  },
+];
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -26,39 +32,48 @@ const personJsonLd = {
 
 <PageLayout>
   {/* ── Hero ────────────────────────────────────────────── */}
-  <section class={`${homeShell} pt-12 pb-6 sm:pt-20 sm:pb-10`}>
+  <section class={`${homeShell} pt-12 pb-10 sm:pt-20 sm:pb-14`}>
     <div class="max-w-2xl">
-      <h1 class="mb-6 text-4xl font-medium leading-[1.15] tracking-tight sm:text-5xl">
+      <h1 class="mb-5 text-4xl font-medium leading-[1.15] tracking-tight sm:text-5xl">
         {siteConfig.name}
       </h1>
-      <p class="text-lg leading-relaxed text-muted-foreground">
+      <p class="text-lg leading-relaxed text-foreground/80">
         {siteConfig.description}
       </p>
+      <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+        I own the path from an ambiguous problem to a measurable outcome — thinking like a
+        product strategist and working like a builder.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a
+          href="/work"
+          class="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+        >
+          View my work →
+        </a>
+        <a
+          href="/about"
+          class="inline-flex items-center rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+        >
+          About me
+        </a>
+      </div>
     </div>
   </section>
 
-  {/* ── Work ─────────────────────────────────────────────── */}
-  <section class={`${homeSection} pb-24`}>
-    <div class={homeSectionHeader}>
-      <p class="font-mono text-xs uppercase tracking-widest text-muted-foreground">Work</p>
-      <a href="/work" class="text-xs text-muted-foreground transition-colors hover:text-foreground">View all →</a>
+  {/* ── Career highlights ───────────────────────────────── */}
+  <section class={`${homeShell} pb-24`}>
+    <div class="mb-7 flex items-center justify-between">
+      <p class="font-mono text-xs uppercase tracking-widest text-muted-foreground">Highlights</p>
+      <a href="/work" class="text-xs text-muted-foreground transition-colors hover:text-foreground">View full career →</a>
     </div>
-    <div class={homeCardGrid}>
-      {featuredProjects.slice(0, 3).map((project, i) => (
-        <ProjectCard
-          title={project.data.title}
-          description={project.data.description}
-          skills={project.data.skills}
-          thumbnail={project.data.thumbnail}
-          thumbnailDark={project.data.thumbnailDark}
-          thumbnailWide={project.data.thumbnailWide}
-          thumbnailWideDark={project.data.thumbnailWideDark}
-          slug={project.id}
-          index={i}
-          variant="compact"
-          squareDesktop
-          showDescription
-        />
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-3 lg:gap-6">
+      {highlights.map((h) => (
+        <div class="rounded-xl border border-border bg-card p-6">
+          <p class="mb-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground/70">{h.label}</p>
+          <p class="text-sm leading-relaxed text-foreground/80">{h.text}</p>
+        </div>
       ))}
     </div>
   </section>
