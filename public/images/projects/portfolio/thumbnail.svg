@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Agentic SDLC portfolio">
+  <rect width="1200" height="1200" fill="#1c1a17"/>
+  <!-- pipeline: idea → PRD → stories → build → ship → iterate -->
+  <g stroke="#3a352e" stroke-width="3" fill="none">
+    <path d="M150 600 H1050"/>
+  </g>
+  <g>
+    <circle cx="200" cy="600" r="34" fill="#2a2620" stroke="#e5b28c" stroke-width="3"/>
+    <circle cx="360" cy="600" r="34" fill="#2a2620" stroke="#e5b28c" stroke-width="3"/>
+    <circle cx="520" cy="600" r="34" fill="#2a2620" stroke="#e5b28c" stroke-width="3"/>
+    <circle cx="680" cy="600" r="34" fill="#2a2620" stroke="#e5b28c" stroke-width="3"/>
+    <circle cx="840" cy="600" r="34" fill="#e5b28c"/>
+    <path d="M1000 566 a34 34 0 1 1 -0.1 0" fill="none" stroke="#e5b28c" stroke-width="3" stroke-dasharray="9 7"/>
+  </g>
+  <g font-family="ui-monospace, monospace" font-size="34" fill="#8a8275" text-anchor="middle">
+    <text x="200" y="700">idea</text>
+    <text x="360" y="700">prd</text>
+    <text x="520" y="700">story</text>
+    <text x="680" y="700">build</text>
+    <text x="840" y="700" fill="#e5b28c">ship</text>
+    <text x="1000" y="700">iterate</text>
+  </g>
+  <g font-family="ui-monospace, monospace" font-size="40" fill="#d6d0c6" text-anchor="middle">
+    <text x="600" y="420" letter-spacing="6">AGENTIC SDLC</text>
+  </g>
+</svg>
