@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="GenAI system design">
+  <rect width="1200" height="1200" fill="#1c1a17"/>
+  <!-- system blocks: query → retrieval → llm → evals -->
+  <g fill="#2a2620" stroke="#e5b28c" stroke-width="3">
+    <rect x="170" y="380" width="240" height="120" rx="14"/>
+    <rect x="480" y="380" width="240" height="120" rx="14"/>
+    <rect x="790" y="380" width="240" height="120" rx="14"/>
+    <rect x="480" y="640" width="240" height="120" rx="14"/>
+  </g>
+  <g stroke="#8a8275" stroke-width="3" fill="none">
+    <path d="M410 440 H480"/>
+    <path d="M720 440 H790"/>
+    <path d="M910 500 V700 H720"/>
+    <path d="M600 640 V500" stroke-dasharray="8 7"/>
+  </g>
+  <g font-family="ui-monospace, monospace" font-size="34" fill="#d6d0c6" text-anchor="middle">
+    <text x="290" y="450">query</text>
+    <text x="600" y="450">retrieval</text>
+    <text x="910" y="450">llm</text>
+    <text x="600" y="710" fill="#e5b28c">evals</text>
+  </g>
+  <g font-family="ui-monospace, monospace" font-size="40" fill="#d6d0c6" text-anchor="middle">
+    <text x="600" y="260" letter-spacing="6">GENAI SYSTEM DESIGN</text>
+  </g>
+</svg>

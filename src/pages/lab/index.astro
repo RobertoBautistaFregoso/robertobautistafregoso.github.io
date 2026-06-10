@@ -1,19 +1,41 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const projects = (await getCollection("projects", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.sortOrder - b.data.sortOrder,
+);
 ---
 
 <PageLayout
   title="Lab — Roberto Bautista"
-  description="Tools, experiments, and interaction showcases."
-  noindex
+  description="Side projects and experiments — where Roberto practices the craft hands-on, beyond the day job."
 >
-  <section class="mx-auto max-w-3xl px-6 pt-12 pb-24 sm:pt-24">
+  <section class="mx-auto max-w-3xl px-6 pt-12 pb-12 sm:pt-24">
     <h1 class="mb-4 text-4xl font-medium tracking-tight sm:text-5xl">Lab</h1>
     <p class="max-w-xl text-lg text-muted-foreground">
-      A gallery of tools, experiments, and interactions.
+      Side projects and experiments — where I practice the craft hands-on, beyond the day job.
     </p>
-    <p class="mt-8 font-mono text-sm text-muted-foreground/70">
-      Experiments coming soon (S16).
-    </p>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-6 pb-24">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      {projects.map((project, i) => (
+        <ProjectCard
+          title={project.data.title}
+          description={project.data.description}
+          skills={project.data.skills}
+          thumbnail={project.data.thumbnail}
+          thumbnailDark={project.data.thumbnailDark}
+          thumbnailWide={project.data.thumbnailWide}
+          thumbnailWideDark={project.data.thumbnailWideDark}
+          slug={project.id}
+          index={i}
+          variant="compact"
+          showDescription
+        />
+      ))}
+    </div>
   </section>
 </PageLayout>
