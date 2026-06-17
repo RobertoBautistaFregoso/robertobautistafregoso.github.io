@@ -30,7 +30,9 @@ A live "ask-me-anything" AI copilot on the **Home page** that answers a visitor'
 
 ## Scope status
 - **MVP vs v2 cut:** _TBD — Define stage._
-- **Likely runtime (not yet decided):** static site stays on GitHub Pages + **one serverless endpoint** → Langflow flow (`ask_me_anything`) → LLM. Confirmed in ADR at Decide stage.
+- **Surface:** static home stays on GitHub Pages; the chat lives on a dedicated **`/ask` route** (home module is a launcher).
+- **Backend:** Roberto's `ask-me-anything-workflow` Langflow flow — RAG (Chroma + OpenAI embeddings over his content) + a **Multi-Conditional Router** (ANSWER / CONTACT / REFUSE).
+- **Likely runtime (not yet decided):** static shell + **one serverless endpoint** → the Langflow flow → LLM. Confirmed in an ADR at Decide stage.
 
 ## Artifact index
 | Stage | Artifact | Status |
@@ -43,8 +45,7 @@ A live "ask-me-anything" AI copilot on the **Home page** that answers a visitor'
 
 ## Open questions (resolve downstream — do not pre-decide here)
 - **Knowledge source + NDA boundary** — what may the agent draw on, and what must it *never* reveal (NDA'd client specifics)? Ties directly to the groundedness guardrail. **Highest-priority unknown.**
-- **Surface connection** (Design) — home entry → conversation view via route (`/ask`) vs inline-expand vs modal? Also a Decide-stage / runtime input.
-- **Contextual-CTA selection** (Design) — fixed per-persona rules vs agent-proposed?
+- ✅ *Resolved (Design):* surface → **route to `/ask`** (home = launcher) · CTA → **agent-proposed** (Langflow CONTACT branch) · **👍/👎** feedback per answer. See [`03-design.md`](03-design.md).
 - Persona handling — does it adapt to recruiter vs. client, or one voice for all?
 - Cost ceiling + abuse controls on a public endpoint.
 - **Agent-readability sub-capability** (structured data · `llms.txt` · a tiny "ask-roberto" endpoint for *other people's* agents) — in MVP, or a separable v2? (It's a different surface from the on-page chat.)
