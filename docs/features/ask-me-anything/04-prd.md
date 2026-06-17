@@ -36,7 +36,7 @@ See discovery. **P0:** recruiter/hiring manager · prospective client/buyer. **P
 - `[M]` Serverless **endpoint** (holds the API key, rate-limits) → Langflow flow
 - `[M]` **Golden eval-set + groundedness gate** before ship
 
-**v2 `[2]`:** agent-readability surface — public **ask-roberto endpoint** (and `llms.txt`, though `llms.txt` is ~1 static file and could be promoted to MVP — Roberto's call) · **persistent / cross-session memory** (MVP has working memory only) · persona-adaptive UX beyond the CTA · analytics dashboard · **multi-language** (Spanish) · **calendar / availability** integration · "share this conversation."
+**v2 `[2]`:** agent-readability surface — public **ask-roberto endpoint** + **`llms.txt`** (both v2; MVP stays focused on the human chat surface) · **persistent / cross-session memory** (MVP has working memory only) · persona-adaptive UX beyond the CTA · analytics dashboard · **multi-language** (Spanish) · **calendar / availability** integration · "share this conversation."
 
 ## 6. Functional requirements
 - `[M]` Visitor can ask via free text **or** a suggested prompt; both land on `/ask` and begin answering.
