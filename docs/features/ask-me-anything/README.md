@@ -1,6 +1,6 @@
 # Feature: "Ask Me Anything" home-page agent — one-pager (living spine)
 
-**Status:** 🔭 Discovery · **Owner:** Roberto · **Started:** 2026-06-17
+**Status:** 🎨 Design · **Owner:** Roberto · **Started:** 2026-06-17
 **Milestone (planned):** `v0.2.0` · **Knowledge model:** mini-cycle on a live product (see process map)
 
 > The always-current entry point for this feature. Decisions live in **ADRs**; moving work lives in **issues**; this page links everything and states the current truth. Keep it current; don't duplicate detail here.
@@ -30,19 +30,22 @@ A live "ask-me-anything" AI copilot on the **Home page** that answers a visitor'
 
 ## Scope status
 - **MVP vs v2 cut:** _TBD — Define stage._
-- **Likely runtime (not yet decided):** static site stays on GitHub Pages + **one serverless endpoint** → Langflow flow (`ask_me_anything`) → LLM. Confirmed in ADR at Decide stage.
+- **Surface:** static home stays on GitHub Pages; the chat lives on a dedicated **`/ask` route** (home module is a launcher).
+- **Backend:** Roberto's `ask-me-anything-workflow` Langflow flow — RAG (Chroma + OpenAI embeddings over his content) + a **Multi-Conditional Router** (ANSWER / CONTACT / REFUSE).
+- **Likely runtime (not yet decided):** static shell + **one serverless endpoint** → the Langflow flow → LLM. Confirmed in an ADR at Decide stage.
 
 ## Artifact index
 | Stage | Artifact | Status |
 |---|---|---|
 | Discovery | [01 · problem statement](01-problem-statement.md) · [02 · success definition](02-success-definition.md) | ✅ this pass |
-| Design | wireframe → prototype, UX states | ⏳ stage 3 |
+| Design | [03 · design reference](03-design.md) — 2 surfaces, states, contextual-CTA mechanic | ✅ this pass |
 | Define | PRD · stories + AC · priority | ⏳ stage 4 |
 | Decide | ADRs 0007+ (runtime, agent framework, evals, model, retrieval) · system-map | ⏳ stage 5 |
 | Build/Ship | endpoint, Langflow flow export, knowledge base, golden eval-set, live URL | ⏳ stages 6–8 |
 
 ## Open questions (resolve downstream — do not pre-decide here)
 - **Knowledge source + NDA boundary** — what may the agent draw on, and what must it *never* reveal (NDA'd client specifics)? Ties directly to the groundedness guardrail. **Highest-priority unknown.**
+- ✅ *Resolved (Design):* surface → **route to `/ask`** (home = launcher) · CTA → **agent-proposed** (Langflow CONTACT branch) · **👍/👎** feedback per answer. See [`03-design.md`](03-design.md).
 - Persona handling — does it adapt to recruiter vs. client, or one voice for all?
 - Cost ceiling + abuse controls on a public endpoint.
 - **Agent-readability sub-capability** (structured data · `llms.txt` · a tiny "ask-roberto" endpoint for *other people's* agents) — in MVP, or a separable v2? (It's a different surface from the on-page chat.)
