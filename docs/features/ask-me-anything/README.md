@@ -31,7 +31,7 @@ A live "ask-me-anything" AI copilot on the **Home page** that answers a visitor'
 ## Scope status
 - **MVP vs v2 cut:** drafted in [PRD §5](04-prd.md) — **pending Roberto's sign-off** (also the knowledge & NDA policy, PRD §4).
 - **Surface:** static home stays on GitHub Pages; the chat lives on a dedicated **`/ask` route** (home module is a launcher).
-- **Backend:** Roberto's `ask-me-anything-workflow` Langflow flow — RAG (Chroma + OpenAI embeddings over his content) + a **Multi-Conditional Router** (ANSWER / CONTACT / REFUSE).
+- **Backend:** Roberto's `ask-me-anything-workflow` Langflow flow — **triage (`query_classifier`)** → **Refuse · Contact-capture · Retrieve→Generate**, over a RAG pipeline (Docs → chunk → embed → index → Vector DB), with **working memory** (in-session) + a **CTA tool**. Observability wired via **Arize**.
 - **Likely runtime (not yet decided):** static shell + **one serverless endpoint** → the Langflow flow → LLM. Confirmed in an ADR at Decide stage.
 
 ## Artifact index
