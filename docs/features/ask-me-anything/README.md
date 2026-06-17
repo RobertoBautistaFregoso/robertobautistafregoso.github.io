@@ -39,7 +39,7 @@ A live "ask-me-anything" AI copilot on the **Home page** that answers a visitor'
 |---|---|---|
 | Discovery | [01 · problem statement](01-problem-statement.md) · [02 · success definition](02-success-definition.md) | ✅ this pass |
 | Design | [03 · design reference](03-design.md) — 2 surfaces, states, contextual-CTA mechanic | ✅ this pass |
-| Define | [04 · PRD](04-prd.md) ✅ (draft) · stories + AC · priority | 🔶 PRD drafted; stories next |
+| Define | [04 · PRD](04-prd.md) · [stories](stories/) (AMA-01…09) · [priority](priority.md) | ✅ this pass |
 | Decide | ADRs 0007+ (runtime, agent framework, evals, model, retrieval) · system-map | ⏳ stage 5 |
 | Build/Ship | endpoint, Langflow flow export, knowledge base, golden eval-set, live URL | ⏳ stages 6–8 |
 
