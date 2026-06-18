@@ -1,6 +1,6 @@
 # Feature: "Ask Me Anything" home-page agent — one-pager (living spine)
 
-**Status:** 📝 Define · **Owner:** Roberto · **Started:** 2026-06-17
+**Status:** 🏗️ Decide ✓ — ready to Build · **Owner:** Roberto · **Started:** 2026-06-17
 **Milestone (planned):** `v0.2.0` · **Knowledge model:** mini-cycle on a live product (see process map)
 
 > The always-current entry point for this feature. Decisions live in **ADRs**; moving work lives in **issues**; this page links everything and states the current truth. Keep it current; don't duplicate detail here.
@@ -32,7 +32,8 @@ A live "ask-me-anything" AI copilot on the **Home page** that answers a visitor'
 - **MVP vs v2 cut:** drafted in [PRD §5](04-prd.md) — **pending Roberto's sign-off** (also the knowledge & NDA policy, PRD §4).
 - **Surface:** static home stays on GitHub Pages; the chat lives on a dedicated **`/ask` route** (home module is a launcher).
 - **Backend:** Roberto's `ask-me-anything-workflow` Langflow flow — **triage (`query_classifier`)** → **Refuse · Contact-capture · Retrieve→Generate**, over a RAG pipeline (Docs → chunk → embed → index → Vector DB), with **working memory** (in-session) + a **CTA tool**. Observability wired via **Arize**.
-- **Likely runtime (not yet decided):** static shell + **one serverless endpoint** → the Langflow flow → LLM. Confirmed in an ADR at Decide stage.
+- **Runtime (decided — ADR-0007):** static site on GitHub Pages + a **Vercel serverless function** (gatekeeper: secrets, rate-limit, cost cap) → **managed Langflow on DataStax**.
+- **Observability & data (ADR-0008):** Arize (traces, evals); 👍/👎 → Arize trace feedback; **Supabase deferred to v2**.
 
 ## Artifact index
 | Stage | Artifact | Status |
@@ -40,7 +41,7 @@ A live "ask-me-anything" AI copilot on the **Home page** that answers a visitor'
 | Discovery | [01 · problem statement](01-problem-statement.md) · [02 · success definition](02-success-definition.md) | ✅ this pass |
 | Design | [03 · design reference](03-design.md) — 2 surfaces, states, contextual-CTA mechanic | ✅ this pass |
 | Define | [04 · PRD](04-prd.md) · [stories](stories/) (AMA-01…09) · [priority](priority.md) | ✅ this pass |
-| Decide | ADRs 0007+ (runtime, agent framework, evals, model, retrieval) · system-map | ⏳ stage 5 |
+| Decide | [ADR-0007 runtime](../../03-architecture/adr-0007-ama-runtime-hosting.md) · [ADR-0008 stack/observability/data](../../03-architecture/adr-0008-ama-stack-observability-data.md) | ✅ this pass |
 | Build/Ship | endpoint, Langflow flow export, knowledge base, golden eval-set, live URL | ⏳ stages 6–8 |
 
 ## Open questions (resolve downstream — do not pre-decide here)
@@ -49,5 +50,5 @@ A live "ask-me-anything" AI copilot on the **Home page** that answers a visitor'
 - Persona handling — does it adapt to recruiter vs. client, or one voice for all?
 - Cost ceiling + abuse controls on a public endpoint.
 - **Agent-readability sub-capability** (structured data · `llms.txt` · a tiny "ask-roberto" endpoint for *other people's* agents) — in MVP, or a separable v2? (It's a different surface from the on-page chat.)
-- Langflow hosting + Arize eval setup specifics.
+- ✅ *Decided (Decide):* runtime (Vercel fn → DataStax Langflow, ADR-0007) · observability/data (Arize; 👍/👎→Arize; Supabase v2, ADR-0008). Remaining = build-time tuning (rate-limit thresholds, cost ceiling, latency p50/p95) + the corpus contents Roberto maintains.
 - Latency target precision (p50/p95) and whether answers stream.
