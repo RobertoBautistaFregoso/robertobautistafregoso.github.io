@@ -1,6 +1,6 @@
 # ADR-0007: AMA agent — runtime & hosting (static shell + Vercel function → managed Langflow)
 
-**Status:** Accepted · **Date:** 2026-06-17 · **Owner:** Roberto (solo)
+**Status:** Accepted — ⚠️ *host superseded by [ADR-0009](adr-0009-ama-revised-runtime-supabase-railway.md)* (DataStax Langflow was sunset; now Langflow OSS on Railway). The gatekeeper seam here still stands. · **Date:** 2026-06-17 · **Owner:** Roberto (solo)
 **Feature:** [Ask Me Anything agent](../features/ask-me-anything/README.md) · **Triggered by:** the revisit clause in ADR-0001 & ADR-0003 ("live AI features → reconsider").
 
 ---
