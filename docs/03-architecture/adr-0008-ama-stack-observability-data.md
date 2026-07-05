@@ -1,6 +1,6 @@
 # ADR-0008: AMA agent — stack, observability & data (Langflow · Arize · feedback; Supabase deferred)
 
-**Status:** Accepted · **Date:** 2026-06-17 · **Owner:** Roberto (solo)
+**Status:** Accepted — ⚠️ *host + vector store superseded by [ADR-0009](adr-0009-ama-revised-runtime-supabase-railway.md)* (DataStax→Railway; Chroma→Supabase pgvector, now MVP not v2). Model/Arize/feedback here still stand. · **Date:** 2026-06-17 · **Owner:** Roberto (solo)
 **Feature:** [Ask Me Anything agent](../features/ask-me-anything/README.md) · **Companion to:** [ADR-0007](adr-0007-ama-runtime-hosting.md).
 
 ---
