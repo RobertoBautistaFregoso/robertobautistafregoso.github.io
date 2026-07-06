@@ -266,3 +266,32 @@ A live AI copilot on the home page. Ran the whole SDLC as a **feature mini-cycle
 - **⏭ NEXT (highest value):** in the Railway Langflow, **swap Chroma → Supabase** + **ingest Roberto's docs** (run ingestion from *local* Langflow → cloud Supabase) → grounded answers. Then: real CTA booking link (replaces `[your booking link]`), then AMA-02 (home launcher), AMA-03 (streaming — cut the ~15–27s latency).
 - **Gotchas learned:** Langflow OOMs under ~1 GB (needs ≥2 GB replica limit on Railway); DataStax Langflow is dead (Apr 2026); Langflow credential vars need a valid **Fernet** `LANGFLOW_SECRET_KEY` (44-char base64); Vercel caches the repo tree on import (services/ folder must be on `main`).
 - **💵 Now costs money** (Railway Hobby + OpenAI tokens) — unlike the $0 static site. Watch dashboards.
+
+---
+
+## AMA — Supabase swap + ingest: prep staged (session 2026-07-06)
+
+**Goal:** swap Chroma → Supabase in the Langflow flow + ingest docs → grounded answers. Landed the prep this session; the actual ingest run + flow swap is tomorrow. All new files are **uncommitted** on branch `claude/objective-benz-5b69b9`, under `services/langflow/`.
+
+### Done
+- **Corpus scope decided:** Phase 1 = **public site content only** (zero NDA risk). Phase 2 (later) = broader work/personal notes — deferred deliberately so the NDA redaction + never-reveal boundary work happens exactly when it's needed, not before.
+- **Corpus assembled** — `services/langflow/corpus/`: 8 topical markdown files (`01-profile` … `08-skills`) derived from `experience.ts` / `site-config.ts` / `about.astro` / `content/projects/*`, plus a provenance `README.md`. Written as prose, not TS/HTML (embeds cleaner; each file self-contained so a retrieved chunk stands alone).
+- **Supabase schema verified** via SQL editor: pgvector 0.8.2, `documents` table with `content text` / `metadata jsonb` / `embedding vector(1536)`, and `match_documents(query_embedding vector, match_count int, filter jsonb)` — all present + correct. It's the canonical LangChain/Supabase schema; **nothing to create**. `supabase-schema.sql` saved for reference/future repair.
+- **Ingestion built as a script, not a Langflow flow** — `ingest.py` + `requirements.txt` + `.env.example`. corpus → chunk (1000/200) → OpenAI `text-embedding-3-small` → Supabase via LangChain `SupabaseVectorStore` (full-refresh: clears then re-inserts). Runbook in `services/langflow/README.md`.
+
+### Gotchas / decisions logged this session
+- **"Run ingestion locally" was a stale instruction** — it dated from when the vector store was local Chroma on the laptop. With vectors now in cloud Supabase, ingest can run from anywhere; a laptop script is cleanest — reproducible, in git, and it sidesteps Railway's ephemeral storage + the missing File loader.
+- **Use the Langflow `Supabase` component, NOT `PGVector`** — both exist, but PGVector uses its own `langchain_pg_*` schema and would ignore the verified `documents`/`match_documents` table. `Supabase` is the matched pair for our schema.
+- **Chroma Cloud considered and rejected** — no ADR-0009 revisit trigger fired (Langflow *can* reach Supabase; corpus is ~12 chunks, nowhere near "scale demands a dedicated store"). Didn't re-litigate a settled, working decision mid-build.
+- **Langflow-this-version quirks:** no plain `File` loader (split/renamed; `Directory` is now "Legacy"); the `Knowledge` component's DB-provider list shows Postgres pgvector as "Coming soon", so that route can't reach Supabase at all — dead end.
+
+### ▶ FRESH-SESSION ENTRY — start here (tomorrow)
+- **State:** AMA-01 still LIVE but **ungrounded** — the Railway flow is still on the `/app/chroma_db` shim. Nothing changed yet in Railway / Supabase / Vercel. All swap prep is staged + uncommitted in `services/langflow/`.
+- **First action:** `git status` → decide whether to commit the `services/langflow/` scaffolding (corpus + script + runbook + schema SQL). It's complete and standalone — safe to commit even before the swap lands.
+- **Then, in order:**
+  1. **Ingest:** `cd services/langflow` → `python3 -m venv .venv && source .venv/bin/activate` → `cp .env.example .env` (fill OpenAI key + Supabase URL + service_role key) → `pip install -r requirements.txt` → `python ingest.py`. Verify `select count(*) from documents;` ≈ 12.
+  2. **Swap retrieval** in Railway `ask-me-anything-workflow`: add `Supabase` component (URL + service_role key stored as a Langflow **global var** + Query Name `match_documents`), feed the existing `text-embedding-3-small` embeddings, wire question → `Search Query` and `Search Results` → prompt, **leave `Ingest Data` unconnected**, delete Chroma DB + Directory, Save (keep the same flow ID so the gatekeeper URL stays valid).
+  3. **Verify grounded:** on-corpus Q ("What did Roberto do at Crabi?") answers with specifics; off-corpus Q ("favorite programming language?") says "I don't have that."
+  4. **Then:** export both flows' JSON → `services/langflow/flows/` (export with API keys OFF; grep for secrets before commit); scrub stale "DataStax" comments in `services/ask-api/api/ask.ts` (host is Railway now); replace the CTA `[your booking link]` placeholder.
+- **Credentials needed tomorrow:** OpenAI key, Supabase Project URL + service_role key (Supabase → Settings → API).
+- **Reminder:** this path costs money (Railway + OpenAI) — glance at the dashboards.
