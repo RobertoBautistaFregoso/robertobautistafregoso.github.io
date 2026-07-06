@@ -1,0 +1,78 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+// The gatekeeper function URL (ADR-0007). Set PUBLIC_ASK_API_URL in the build env
+// once the Vercel function is deployed; empty = "not configured" (skeleton).
+const apiUrl = import.meta.env.PUBLIC_ASK_API_URL ?? "";
+---
+
+<BaseLayout
+  title="Ask Roberto"
+  description="Ask Roberto's AI anything — grounded in his real work."
+  noindex
+>
+  <main class="mx-auto flex min-h-screen max-w-2xl flex-col px-6 py-12">
+    <header class="mb-8">
+      <a href="/" class="font-mono text-xs text-muted-foreground transition-colors hover:text-foreground">← Home</a>
+      <h1 class="mt-4 text-2xl font-medium tracking-tight">
+        Ask Roberto <span class="font-mono text-xs text-muted-foreground">· walking skeleton</span>
+      </h1>
+      <p class="mt-2 text-sm text-muted-foreground">Type a question; the answer comes from the live agent.</p>
+    </header>
+
+    <form id="ask-form" class="flex gap-2">
+      <label for="q" class="sr-only">Your question</label>
+      <input
+        id="q"
+        type="text"
+        autocomplete="off"
+        required
+        placeholder="Ask anything about Roberto…"
+        class="flex-1 rounded-lg border border-border bg-card px-4 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      />
+      <button
+        id="send"
+        type="submit"
+        class="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+      >
+        Ask
+      </button>
+    </form>
+
+    <section id="answer" class="mt-8 whitespace-pre-wrap text-base leading-relaxed text-foreground/90" aria-live="polite"></section>
+  </main>
+
+  <script define:vars={{ apiUrl }}>
+    const form = document.getElementById("ask-form");
+    const input = document.getElementById("q");
+    const send = document.getElementById("send");
+    const out = document.getElementById("answer");
+
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const question = input.value.trim();
+      if (!question) return;
+      if (!apiUrl) {
+        out.textContent = "Agent endpoint not configured yet (set PUBLIC_ASK_API_URL).";
+        return;
+      }
+      send.disabled = true;
+      out.textContent = "Thinking…";
+      try {
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+        const data = await res.json().catch(() => ({}));
+        out.textContent = res.ok
+          ? (data.answer ?? "(no answer returned)")
+          : `Error: ${data.error ?? res.status}`;
+      } catch {
+        out.textContent = "Couldn't reach the agent. Try again, or reach Roberto directly.";
+      } finally {
+        send.disabled = false;
+      }
+    });
+  </script>
+</BaseLayout>

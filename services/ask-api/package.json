@@ -1,0 +1,7 @@
+{
+  "name": "ask-roberto-api",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Gatekeeper serverless function for the Ask-Me-Anything agent (ADR-0007). Deployed separately on Vercel; the static site calls it.",
+  "type": "module"
+}
