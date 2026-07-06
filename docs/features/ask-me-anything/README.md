@@ -1,6 +1,6 @@
 # Feature: "Ask Me Anything" home-page agent — one-pager (living spine)
 
-**Status:** 🔧 Build — AMA-01 (walking skeleton) · **Owner:** Roberto · **Started:** 2026-06-17
+**Status:** 🔧 Build — AMA-01 ✅ walking skeleton LIVE end-to-end · **Owner:** Roberto · **Started:** 2026-06-17
 **Milestone (planned):** `v0.2.0` · **Knowledge model:** mini-cycle on a live product (see process map)
 
 > The always-current entry point for this feature. Decisions live in **ADRs**; moving work lives in **issues**; this page links everything and states the current truth. Keep it current; don't duplicate detail here.
@@ -43,7 +43,18 @@ A live "ask-me-anything" AI copilot on the **Home page** that answers a visitor'
 | Design | [03 · design reference](03-design.md) — 2 surfaces, states, contextual-CTA mechanic | ✅ this pass |
 | Define | [04 · PRD](04-prd.md) · [stories](stories/) (AMA-01…09) · [priority](priority.md) | ✅ this pass |
 | Decide | [ADR-0007 runtime](../../03-architecture/adr-0007-ama-runtime-hosting.md) · [ADR-0008 stack/observability/data](../../03-architecture/adr-0008-ama-stack-observability-data.md) | ✅ this pass |
-| Build/Ship | endpoint, Langflow flow export, knowledge base, golden eval-set, live URL | ⏳ stages 6–8 |
+| Build/Ship | **AMA-01 ✅** — `/ask` → Vercel gatekeeper (`…vercel.app/api/ask`) → Langflow on Railway → OpenAI, verified end-to-end (warm ~15s). Vector store on a temp Chroma shim. | 🔧 in progress |
+
+### Live infra (AMA-01)
+- **Front-end:** `/ask` on GitHub Pages; endpoint via `PUBLIC_ASK_API_URL` (set in `deploy.yml`).
+- **Gatekeeper:** Vercel project (root `services/ask-api`) → `https://robertobautistafregoso-github-io.vercel.app/api/ask`.
+- **Agent:** Langflow OSS on Railway (Hobby, 8 GB limit); auth on.
+- **Vectors:** Supabase `documents` table (pgvector, RLS) — **not yet wired into the flow** (flow still on a temp `/app/chroma_db` Chroma shim → answers ungrounded).
+
+### Immediate follow-ups (before AMA-02+)
+1. **Swap Chroma → Supabase in the flow** + **ingest Roberto's docs** (from local Langflow → cloud Supabase) → grounded answers. *(This is what makes it actually useful.)*
+2. Replace the CTA's `[your booking link]` placeholder with a real link.
+3. Latency (~15–27s) → AMA-03 streaming.
 
 ## Open questions (resolve downstream — do not pre-decide here)
 - **Knowledge source + NDA boundary** — what may the agent draw on, and what must it *never* reveal (NDA'd client specifics)? Ties directly to the groundedness guardrail. **Highest-priority unknown.**
