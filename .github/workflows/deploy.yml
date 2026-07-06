@@ -22,8 +22,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Build Astro site
         uses: withastro/action@v3
+        env:
+          # Public function URL of the Ask-Me-Anything gatekeeper (not a secret; ADR-0007/0009).
+          PUBLIC_ASK_API_URL: https://robertobautistafregoso-github-io.vercel.app/api/ask
         with:
-          node-version: 22  # Astro 6 requires Node >=22.12; the action defaults to 20
+          node-version: 22  # Node 22 for the Astro 5 build; the action defaults to 20
 
   deploy:
     needs: build
