@@ -254,3 +254,15 @@ Lightweight Phase 1 for the portfolio (problem is well-understood → quick prob
 - **Known non-blocker (mildly time-sensitive):** GitHub Actions forces Node 24 ~**June 16, 2026**; deploy actions currently run on Node 20 → bump action versions (small infra chore) before then.
 - **Optional cleanup:** duplicate GitHub Project board **#2** ("Portfolio v0") still exists — `gh project delete 2 --owner RobertoBautistaFregoso`.
 - **First action on resume:** `git status` (confirm clean) → pick a story → `git checkout -b feat/<story>` from latest `main`. `pnpm install` if fresh machine (pnpm required).
+
+---
+
+## NEW FEATURE: "Ask Me Anything" agent (v0.2.0) — full mini-cycle + AMA-01 shipped
+
+A live AI copilot on the home page. Ran the whole SDLC as a **feature mini-cycle**; **living spine = `docs/features/ask-me-anything/README.md`** (read that first — it's current).
+
+- **Done + merged:** Discovery (#29) · Design (#30) · Define — PRD + 9 stories AMA-01…09 + priority (#31) · Decide — ADR-0007 runtime, 0008 stack/data, **0009** (supersedes: DataStax Langflow was sunset → **Langflow OSS on Railway** + **Supabase pgvector**) · **AMA-01 walking skeleton LIVE** (#33/#35).
+- **Live stack:** `/ask` (GitHub Pages) → **Vercel gatekeeper** `https://robertobautistafregoso-github-io.vercel.app/api/ask` (holds LLM key) → **Langflow on Railway** (Hobby, auth on, ≥2 GB) → OpenAI. Vectors = **Supabase** `documents` table (pgvector), but **NOT yet wired into the flow** (flow on a temp `/app/chroma_db` Chroma shim → answers ungrounded / "I don't have that").
+- **⏭ NEXT (highest value):** in the Railway Langflow, **swap Chroma → Supabase** + **ingest Roberto's docs** (run ingestion from *local* Langflow → cloud Supabase) → grounded answers. Then: real CTA booking link (replaces `[your booking link]`), then AMA-02 (home launcher), AMA-03 (streaming — cut the ~15–27s latency).
+- **Gotchas learned:** Langflow OOMs under ~1 GB (needs ≥2 GB replica limit on Railway); DataStax Langflow is dead (Apr 2026); Langflow credential vars need a valid **Fernet** `LANGFLOW_SECRET_KEY` (44-char base64); Vercel caches the repo tree on import (services/ folder must be on `main`).
+- **💵 Now costs money** (Railway Hobby + OpenAI tokens) — unlike the $0 static site. Watch dashboards.
