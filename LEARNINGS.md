@@ -295,3 +295,31 @@ A live AI copilot on the home page. Ran the whole SDLC as a **feature mini-cycle
   4. **Then:** export both flows' JSON → `services/langflow/flows/` (export with API keys OFF; grep for secrets before commit); scrub stale "DataStax" comments in `services/ask-api/api/ask.ts` (host is Railway now); replace the CTA `[your booking link]` placeholder.
 - **Credentials needed tomorrow:** OpenAI key, Supabase Project URL + service_role key (Supabase → Settings → API).
 - **Reminder:** this path costs money (Railway + OpenAI) — glance at the dashboards.
+
+---
+
+## AMA — Chroma → Supabase swap DONE: grounded answers LIVE (session 2026-07-07)
+
+**🎯 Milestone:** the flow now retrieves from Supabase and answers are **grounded end-to-end**, verified in the Langflow Playground *and* on the live `/ask` page. This is the step that made the agent actually useful (was answering "I don't have that" on the Chroma shim).
+
+### What I did
+- **Ingested** the Phase-1 corpus via `services/langflow/ingest.py` → **15 chunks** in Supabase `documents`. Used Homebrew **Python 3.12** for the venv (system 3.9 too old). The new Supabase **`sb_secret_`** key worked fine with supabase-py/LangChain — no legacy JWT needed.
+- **Proved retrieval outside Langflow first** (similarity search returned the right chunks) — so any flow issue afterward was wiring, not data. Good de-risk.
+- **Swapped the retrieval vector node** in the Railway flow: `Chroma → Supabase` (URL + service-key global var + `match_documents`), reused the existing `text-embedding-3-small` embeddings, wired question → Search Query and Search Results → Parser, left `Ingest Data` unconnected (ingestion is the script's job). Deleted Chroma + Directory + Split Text.
+- **Fixed the Parser**: (1) set Supabase output to **DataFrame** — Parser mode rejects a List[Data] ("List of Data objects is not supported"); (2) template `{file_path}` → `{source}` (the column our ingest actually wrote).
+- **Real CTA**: replaced `[your email]`/`[your booking link]` with real email + Calendly link in the Prompt Template.
+- **Verified** grounded (Crabi answer cites real metrics) + guardrail (favorite-language → refuses, redirects to contact) — in Playground *and* live `/ask`.
+- **Exported the flow JSON to git** → `services/langflow/flows/ask-me-anything-workflow.json` (keys OFF; secret-scanned clean — creds referenced by global-var name only).
+
+### Gotchas / lessons
+- **Observability is instance-level, not flow-level.** Arize was wired via **env vars on the local Langflow instance**, so moving the flow to Railway silently dropped it — the nodes moved, the tracing wiring didn't. Same shape for secret global vars: the exported flow JSON references *names*, not values, so a fresh Railway import needs `OPENAI_API_KEY` + the Supabase service key re-set. Reconnect Arize via Railway env vars (`ARIZE_SPACE_ID` / `ARIZE_API_KEY`) + restart.
+- **Latency is 15–116s and highly variable.** Per-node timings show retrieval is NOT the bottleneck (embeddings 33ms, Supabase 435ms). A 7× swing on identical work points at **Railway cold-start / Hobby-tier CPU** + the LLM (`gpt-5.5-pro`, a heavy reasoning tier). Whether to drop to a faster model is an **eval question, not a guess** — needs Arize + a small eval set to compare latency AND answer quality (AMA-09 eval-gate territory).
+
+### Bug filed
+- **#37** — live `/ask` renders the agent's markdown contact link as raw text (`[…](mailto:…)`); Playground renders it fine. Minor front-end fix (page isn't parsing markdown).
+
+### ▶ FRESH-SESSION ENTRY — start here
+- **State:** AMA grounded + live + verified end-to-end; flow JSON now in git (branch `claude/objective-benz-5b69b9`). Costs money (Railway + OpenAI).
+- **Immediate next (was in progress):** **reconnect Arize** on Railway (`ARIZE_SPACE_ID` + `ARIZE_API_KEY` env vars → restart), then read the first trace for the LLM latency breakdown.
+- **Then:** build a small **latency + quality eval** in Arize → **A/B the model** (`gpt-5.5-pro` vs a faster model) with data → decide. Also: keep Railway warm (cold-start), **AMA-03** streaming (perceived latency), fix **#37**, **AMA-02** home launcher.
+- **Doc debt:** add the required Railway env vars (OPENAI/Supabase global vars + `ARIZE_*`) to `services/langflow/README.md` so a container rebuild doesn't silently lose them.
