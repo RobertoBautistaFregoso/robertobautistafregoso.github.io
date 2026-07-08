@@ -26,3 +26,8 @@ out/
 *.log
 npm-debug.log*
 yarn-debug.log*
+
+# Python (services/langflow ingestion script)
+.venv/
+__pycache__/
+*.pyc

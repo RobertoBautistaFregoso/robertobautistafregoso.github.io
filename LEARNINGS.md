@@ -266,3 +266,86 @@ A live AI copilot on the home page. Ran the whole SDLC as a **feature mini-cycle
 - **⏭ NEXT (highest value):** in the Railway Langflow, **swap Chroma → Supabase** + **ingest Roberto's docs** (run ingestion from *local* Langflow → cloud Supabase) → grounded answers. Then: real CTA booking link (replaces `[your booking link]`), then AMA-02 (home launcher), AMA-03 (streaming — cut the ~15–27s latency).
 - **Gotchas learned:** Langflow OOMs under ~1 GB (needs ≥2 GB replica limit on Railway); DataStax Langflow is dead (Apr 2026); Langflow credential vars need a valid **Fernet** `LANGFLOW_SECRET_KEY` (44-char base64); Vercel caches the repo tree on import (services/ folder must be on `main`).
 - **💵 Now costs money** (Railway Hobby + OpenAI tokens) — unlike the $0 static site. Watch dashboards.
+
+---
+
+## AMA — Supabase swap + ingest: prep staged (session 2026-07-06)
+
+**Goal:** swap Chroma → Supabase in the Langflow flow + ingest docs → grounded answers. Landed the prep this session; the actual ingest run + flow swap is tomorrow. All new files are **uncommitted** on branch `claude/objective-benz-5b69b9`, under `services/langflow/`.
+
+### Done
+- **Corpus scope decided:** Phase 1 = **public site content only** (zero NDA risk). Phase 2 (later) = broader work/personal notes — deferred deliberately so the NDA redaction + never-reveal boundary work happens exactly when it's needed, not before.
+- **Corpus assembled** — `services/langflow/corpus/`: 8 topical markdown files (`01-profile` … `08-skills`) derived from `experience.ts` / `site-config.ts` / `about.astro` / `content/projects/*`, plus a provenance `README.md`. Written as prose, not TS/HTML (embeds cleaner; each file self-contained so a retrieved chunk stands alone).
+- **Supabase schema verified** via SQL editor: pgvector 0.8.2, `documents` table with `content text` / `metadata jsonb` / `embedding vector(1536)`, and `match_documents(query_embedding vector, match_count int, filter jsonb)` — all present + correct. It's the canonical LangChain/Supabase schema; **nothing to create**. `supabase-schema.sql` saved for reference/future repair.
+- **Ingestion built as a script, not a Langflow flow** — `ingest.py` + `requirements.txt` + `.env.example`. corpus → chunk (1000/200) → OpenAI `text-embedding-3-small` → Supabase via LangChain `SupabaseVectorStore` (full-refresh: clears then re-inserts). Runbook in `services/langflow/README.md`.
+
+### Gotchas / decisions logged this session
+- **"Run ingestion locally" was a stale instruction** — it dated from when the vector store was local Chroma on the laptop. With vectors now in cloud Supabase, ingest can run from anywhere; a laptop script is cleanest — reproducible, in git, and it sidesteps Railway's ephemeral storage + the missing File loader.
+- **Use the Langflow `Supabase` component, NOT `PGVector`** — both exist, but PGVector uses its own `langchain_pg_*` schema and would ignore the verified `documents`/`match_documents` table. `Supabase` is the matched pair for our schema.
+- **Chroma Cloud considered and rejected** — no ADR-0009 revisit trigger fired (Langflow *can* reach Supabase; corpus is ~12 chunks, nowhere near "scale demands a dedicated store"). Didn't re-litigate a settled, working decision mid-build.
+- **Langflow-this-version quirks:** no plain `File` loader (split/renamed; `Directory` is now "Legacy"); the `Knowledge` component's DB-provider list shows Postgres pgvector as "Coming soon", so that route can't reach Supabase at all — dead end.
+
+### ▶ FRESH-SESSION ENTRY — start here (tomorrow)
+- **State:** AMA-01 still LIVE but **ungrounded** — the Railway flow is still on the `/app/chroma_db` shim. Nothing changed yet in Railway / Supabase / Vercel. All swap prep is staged + uncommitted in `services/langflow/`.
+- **First action:** `git status` → decide whether to commit the `services/langflow/` scaffolding (corpus + script + runbook + schema SQL). It's complete and standalone — safe to commit even before the swap lands.
+- **Then, in order:**
+  1. **Ingest:** `cd services/langflow` → `python3 -m venv .venv && source .venv/bin/activate` → `cp .env.example .env` (fill OpenAI key + Supabase URL + service_role key) → `pip install -r requirements.txt` → `python ingest.py`. Verify `select count(*) from documents;` ≈ 12.
+  2. **Swap retrieval** in Railway `ask-me-anything-workflow`: add `Supabase` component (URL + service_role key stored as a Langflow **global var** + Query Name `match_documents`), feed the existing `text-embedding-3-small` embeddings, wire question → `Search Query` and `Search Results` → prompt, **leave `Ingest Data` unconnected**, delete Chroma DB + Directory, Save (keep the same flow ID so the gatekeeper URL stays valid).
+  3. **Verify grounded:** on-corpus Q ("What did Roberto do at Crabi?") answers with specifics; off-corpus Q ("favorite programming language?") says "I don't have that."
+  4. **Then:** export both flows' JSON → `services/langflow/flows/` (export with API keys OFF; grep for secrets before commit); scrub stale "DataStax" comments in `services/ask-api/api/ask.ts` (host is Railway now); replace the CTA `[your booking link]` placeholder.
+- **Credentials needed tomorrow:** OpenAI key, Supabase Project URL + service_role key (Supabase → Settings → API).
+- **Reminder:** this path costs money (Railway + OpenAI) — glance at the dashboards.
+
+---
+
+## AMA — Chroma → Supabase swap DONE: grounded answers LIVE (session 2026-07-07)
+
+**🎯 Milestone:** the flow now retrieves from Supabase and answers are **grounded end-to-end**, verified in the Langflow Playground *and* on the live `/ask` page. This is the step that made the agent actually useful (was answering "I don't have that" on the Chroma shim).
+
+### What I did
+- **Ingested** the Phase-1 corpus via `services/langflow/ingest.py` → **15 chunks** in Supabase `documents`. Used Homebrew **Python 3.12** for the venv (system 3.9 too old). The new Supabase **`sb_secret_`** key worked fine with supabase-py/LangChain — no legacy JWT needed.
+- **Proved retrieval outside Langflow first** (similarity search returned the right chunks) — so any flow issue afterward was wiring, not data. Good de-risk.
+- **Swapped the retrieval vector node** in the Railway flow: `Chroma → Supabase` (URL + service-key global var + `match_documents`), reused the existing `text-embedding-3-small` embeddings, wired question → Search Query and Search Results → Parser, left `Ingest Data` unconnected (ingestion is the script's job). Deleted Chroma + Directory + Split Text.
+- **Fixed the Parser**: (1) set Supabase output to **DataFrame** — Parser mode rejects a List[Data] ("List of Data objects is not supported"); (2) template `{file_path}` → `{source}` (the column our ingest actually wrote).
+- **Real CTA**: replaced `[your email]`/`[your booking link]` with real email + Calendly link in the Prompt Template.
+- **Verified** grounded (Crabi answer cites real metrics) + guardrail (favorite-language → refuses, redirects to contact) — in Playground *and* live `/ask`.
+- **Exported the flow JSON to git** → `services/langflow/flows/ask-me-anything-workflow.json` (keys OFF; secret-scanned clean — creds referenced by global-var name only).
+
+### Gotchas / lessons
+- **Observability is instance-level, not flow-level.** Arize was wired via **env vars on the local Langflow instance**, so moving the flow to Railway silently dropped it — the nodes moved, the tracing wiring didn't. Same shape for secret global vars: the exported flow JSON references *names*, not values, so a fresh Railway import needs `OPENAI_API_KEY` + the Supabase service key re-set. Reconnect Arize via Railway env vars (`ARIZE_SPACE_ID` / `ARIZE_API_KEY`) + restart.
+- **Latency is 15–116s and highly variable.** Per-node timings show retrieval is NOT the bottleneck (embeddings 33ms, Supabase 435ms). A 7× swing on identical work points at **Railway cold-start / Hobby-tier CPU** + the LLM (`gpt-5.5-pro`, a heavy reasoning tier). Whether to drop to a faster model is an **eval question, not a guess** — needs Arize + a small eval set to compare latency AND answer quality (AMA-09 eval-gate territory).
+
+### Bug filed
+- **#37** — live `/ask` renders the agent's markdown contact link as raw text (`[…](mailto:…)`); Playground renders it fine. Minor front-end fix (page isn't parsing markdown).
+
+### ▶ FRESH-SESSION ENTRY — start here
+- **State:** AMA grounded + live + verified end-to-end; flow JSON now in git (branch `claude/objective-benz-5b69b9`). Costs money (Railway + OpenAI).
+- **Immediate next (was in progress):** **reconnect Arize** on Railway (`ARIZE_SPACE_ID` + `ARIZE_API_KEY` env vars → restart), then read the first trace for the LLM latency breakdown.
+- **Then:** build a small **latency + quality eval** in Arize → **A/B the model** (`gpt-5.5-pro` vs a faster model) with data → decide. Also: keep Railway warm (cold-start), **AMA-03** streaming (perceived latency), fix **#37**, **AMA-02** home launcher.
+- **Doc debt:** add the required Railway env vars (OPENAI/Supabase global vars + `ARIZE_*`) to `services/langflow/README.md` so a container rebuild doesn't silently lose them.
+
+---
+
+## AMA — same session (2026-07-07 cont.): Arize on + model right-sized + backlog
+
+Continuation of the swap session above — everything below happened after grounded answers went live.
+
+### What I did
+- **Reconnected Arize** on Railway. It was lost in the local→Railway move because tracing is **instance-level (env vars), not part of the flow JSON**. Read the exact vars from the proven local config (`/Users/rbaut/perplexia-ai/.env`) — Arize **AX**, three vars: `ARIZE_API_KEY`, `ARIZE_SPACE_ID`, `ARIZE_COLLECTOR_ENDPOINT` (the collector endpoint would've been missed by guessing). Set on Railway → restart → traces flowing. Documented these + the OpenAI/Supabase global vars in `services/langflow/README.md` (doc debt above = **paid**).
+- **Model decision MADE (eval-lite): `gpt-5.5-pro` → `gpt-5.4-nano`** (commit `f126770`). Validated with data, not vibes: first ruled out retrieval as the bottleneck via Arize (embeddings 33ms, Supabase 435ms — the LLM node was ~all of the 15–47s), then swapped to nano and **spot-checked the hard grounded cases** (Crabi, career progression) — accuracy held, no dropped/invented metrics — at **~7–12s** and a fraction of the token cost. Lesson: **retrieval does the heavy lifting; the model only synthesizes handed-over facts, so a nano tier suffices.** Right-size the model to the job.
+- **Learned the Langflow prod-promotion loop:** edit → test in **Playground** (the run API still serves the *saved* version, so real traffic is unaffected) → **Save** (= live; no redeploy, the Railway Langflow *is* prod) → **re-export flow JSON → commit**. Rollback = re-import last-good JSON from git. Keep the **same flow ID** or the gatekeeper's `LANGFLOW_RUN_URL` breaks. Tradeoff accepted: no staging env — editing prod directly is fine for a solo portfolio, not for team/customer-facing.
+- **Backlog filed:** #37 (`/ask` renders the contact link as raw markdown), #38 (basic rate-limit + cost cap on the gatekeeper — **do before AMA-02** home promotion, since it's a public *paid* endpoint).
+
+### Consequence: latency guardrail is now GREEN
+~7–12s < the ≤30s guardrail (was red at 47s). This **re-ranks the backlog** — streaming (AMA-03) drops from "must-fix" to "nice polish"; the model swap did most of what streaming would have.
+
+### ▶ FRESH-SESSION ENTRY — start here (supersedes the pointer above)
+- **State:** AMA **grounded + live + verified** end-to-end; model = `gpt-5.4-nano` (~7–12s, guardrail green); Arize tracing on; flow versioned in git (`services/langflow/flows/ask-me-anything-workflow.json`); branch `claude/objective-benz-5b69b9`, last commit before this note = `f126770`.
+- **Reprioritized next steps (clean path to the home launcher):**
+  1. **#37** — fix `/ask` markdown rendering (quick; it's the contact link = North Star action).
+  2. **#38** — basic rate-limit + cost cap on the gatekeeper (before driving traffic to a paid endpoint).
+  3. **AMA-02** — home launcher (the design = a launcher module on home → routes to `/ask`).
+  4. Then optional/polish: **AMA-07** feedback (👍/👎; needs traffic to matter + feeds evals), **AMA-03** streaming (perceived speed on the hero), **AMA-09** eval harness.
+- **Backlog hygiene:** AMA-02/03/07/09 exist only as **story files**, not GitHub issues — run `story-to-issue` to file them when ready so the board reflects the plan. Also `v0.2.0` milestone still doesn't exist (issues #37/#38 unmilestoned).
+- **Eval debt (honest):** the model decision was validated **ad hoc on ~4 questions**, not a repeatable eval set. Build the small latency+quality+cost eval in Arize before the *next* model/prompt tuning round, so it's data not spot-checks. Arize **cost configs** are unset (Cost tile empty) — set them to track $/answer.
+- **Still costs money** (Railway + OpenAI) — but nano is cheap now. Glance at dashboards.
