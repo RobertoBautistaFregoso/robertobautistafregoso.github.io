@@ -39,16 +39,11 @@ const apiUrl = import.meta.env.PUBLIC_ASK_API_URL ?? "";
       </button>
     </form>
 
-    <section
-      id="answer"
-      class="mt-8 text-base leading-relaxed text-foreground/90 [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_p]:mt-4 [&_p:first-child]:mt-0 [&_strong]:font-semibold [&_strong]:text-foreground [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_ol]:mt-4 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-5"
-      aria-live="polite"
-    ></section>
+    <section id="answer" class="ask-answer mt-8" aria-live="polite"></section>
   </main>
 
   <script>
-    import { marked } from "marked";
-    import DOMPurify from "dompurify";
+    import { askAgent, renderThinking, renderResult } from "@/lib/ask-agent";
 
     const form = document.getElementById("ask-form");
     const input = document.getElementById("q");
@@ -56,39 +51,15 @@ const apiUrl = import.meta.env.PUBLIC_ASK_API_URL ?? "";
     const out = document.getElementById("answer");
     const apiUrl = form?.dataset.apiUrl ?? "";
 
-    // Soft line breaks like the agent writes them; DOMPurify sanitizes the result.
-    marked.setOptions({ breaks: true });
-
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
       const question = input.value.trim();
       if (!question) return;
-      if (!apiUrl) {
-        out.textContent = "Agent endpoint not configured yet (set PUBLIC_ASK_API_URL).";
-        return;
-      }
       send.disabled = true;
-      out.textContent = "Thinking…";
-      try {
-        const res = await fetch(apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (res.ok) {
-          const answer = data.answer ?? "(no answer returned)";
-          // Render the agent's markdown, then sanitize before inserting as HTML —
-          // never innerHTML raw model output (guards against a prompt-injected answer).
-          out.innerHTML = DOMPurify.sanitize(await marked.parse(answer));
-        } else {
-          out.textContent = `Error: ${data.error ?? res.status}`;
-        }
-      } catch {
-        out.textContent = "Couldn't reach the agent. Try again, or reach Roberto directly.";
-      } finally {
-        send.disabled = false;
-      }
+      renderThinking(out);
+      const result = await askAgent(apiUrl, question);
+      renderResult(out, result);
+      send.disabled = false;
     });
   </script>
 </BaseLayout>
