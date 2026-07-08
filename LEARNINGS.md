@@ -323,3 +323,29 @@ A live AI copilot on the home page. Ran the whole SDLC as a **feature mini-cycle
 - **Immediate next (was in progress):** **reconnect Arize** on Railway (`ARIZE_SPACE_ID` + `ARIZE_API_KEY` env vars → restart), then read the first trace for the LLM latency breakdown.
 - **Then:** build a small **latency + quality eval** in Arize → **A/B the model** (`gpt-5.5-pro` vs a faster model) with data → decide. Also: keep Railway warm (cold-start), **AMA-03** streaming (perceived latency), fix **#37**, **AMA-02** home launcher.
 - **Doc debt:** add the required Railway env vars (OPENAI/Supabase global vars + `ARIZE_*`) to `services/langflow/README.md` so a container rebuild doesn't silently lose them.
+
+---
+
+## AMA — same session (2026-07-07 cont.): Arize on + model right-sized + backlog
+
+Continuation of the swap session above — everything below happened after grounded answers went live.
+
+### What I did
+- **Reconnected Arize** on Railway. It was lost in the local→Railway move because tracing is **instance-level (env vars), not part of the flow JSON**. Read the exact vars from the proven local config (`/Users/rbaut/perplexia-ai/.env`) — Arize **AX**, three vars: `ARIZE_API_KEY`, `ARIZE_SPACE_ID`, `ARIZE_COLLECTOR_ENDPOINT` (the collector endpoint would've been missed by guessing). Set on Railway → restart → traces flowing. Documented these + the OpenAI/Supabase global vars in `services/langflow/README.md` (doc debt above = **paid**).
+- **Model decision MADE (eval-lite): `gpt-5.5-pro` → `gpt-5.4-nano`** (commit `f126770`). Validated with data, not vibes: first ruled out retrieval as the bottleneck via Arize (embeddings 33ms, Supabase 435ms — the LLM node was ~all of the 15–47s), then swapped to nano and **spot-checked the hard grounded cases** (Crabi, career progression) — accuracy held, no dropped/invented metrics — at **~7–12s** and a fraction of the token cost. Lesson: **retrieval does the heavy lifting; the model only synthesizes handed-over facts, so a nano tier suffices.** Right-size the model to the job.
+- **Learned the Langflow prod-promotion loop:** edit → test in **Playground** (the run API still serves the *saved* version, so real traffic is unaffected) → **Save** (= live; no redeploy, the Railway Langflow *is* prod) → **re-export flow JSON → commit**. Rollback = re-import last-good JSON from git. Keep the **same flow ID** or the gatekeeper's `LANGFLOW_RUN_URL` breaks. Tradeoff accepted: no staging env — editing prod directly is fine for a solo portfolio, not for team/customer-facing.
+- **Backlog filed:** #37 (`/ask` renders the contact link as raw markdown), #38 (basic rate-limit + cost cap on the gatekeeper — **do before AMA-02** home promotion, since it's a public *paid* endpoint).
+
+### Consequence: latency guardrail is now GREEN
+~7–12s < the ≤30s guardrail (was red at 47s). This **re-ranks the backlog** — streaming (AMA-03) drops from "must-fix" to "nice polish"; the model swap did most of what streaming would have.
+
+### ▶ FRESH-SESSION ENTRY — start here (supersedes the pointer above)
+- **State:** AMA **grounded + live + verified** end-to-end; model = `gpt-5.4-nano` (~7–12s, guardrail green); Arize tracing on; flow versioned in git (`services/langflow/flows/ask-me-anything-workflow.json`); branch `claude/objective-benz-5b69b9`, last commit before this note = `f126770`.
+- **Reprioritized next steps (clean path to the home launcher):**
+  1. **#37** — fix `/ask` markdown rendering (quick; it's the contact link = North Star action).
+  2. **#38** — basic rate-limit + cost cap on the gatekeeper (before driving traffic to a paid endpoint).
+  3. **AMA-02** — home launcher (the design = a launcher module on home → routes to `/ask`).
+  4. Then optional/polish: **AMA-07** feedback (👍/👎; needs traffic to matter + feeds evals), **AMA-03** streaming (perceived speed on the hero), **AMA-09** eval harness.
+- **Backlog hygiene:** AMA-02/03/07/09 exist only as **story files**, not GitHub issues — run `story-to-issue` to file them when ready so the board reflects the plan. Also `v0.2.0` milestone still doesn't exist (issues #37/#38 unmilestoned).
+- **Eval debt (honest):** the model decision was validated **ad hoc on ~4 questions**, not a repeatable eval set. Build the small latency+quality+cost eval in Arize before the *next* model/prompt tuning round, so it's data not spot-checks. Arize **cost configs** are unset (Cost tile empty) — set them to track $/answer.
+- **Still costs money** (Railway + OpenAI) — but nano is cheap now. Glance at dashboards.
