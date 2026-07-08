@@ -15,6 +15,22 @@ browser (/ask) → Vercel gatekeeper → Langflow (Railway) → OpenAI
 - `flows/` — exported flow JSON (source of truth; the Railway container's storage may be
   ephemeral, so the repo is the backup). **Export with API keys OFF; never commit secrets.**
 
+## Instance-level config (NOT in the flow JSON — re-set on any fresh Langflow)
+The exported flow references credentials and tracing **by name, not value**. A fresh Langflow
+instance (e.g. a Railway rebuild) needs these set separately, or the flow silently loses its
+secrets / observability. Lesson learned: moving the flow to Railway dropped Arize because
+tracing is instance-level, not flow-level.
+
+- **Langflow global variables** (Langflow UI → Settings → Global Variables):
+  - `OPENAI_API_KEY` — used by the OpenAI Embeddings + Language Model nodes
+  - Supabase **service_role** key — used by the Supabase vector node
+- **Railway env vars** — Arize AX tracing (values live in the local Langflow `.env`):
+  - `ARIZE_API_KEY`
+  - `ARIZE_SPACE_ID`
+  - `ARIZE_COLLECTOR_ENDPOINT`
+  Set them, then **restart** the service — Langflow instruments tracing at boot, so only runs
+  after the restart are captured.
+
 ## The one invariant that will silently break retrieval
 The **embedding model + dimension must be identical** in the ingestion flow and the
 retrieval flow, and must match the pgvector column. We standardize on OpenAI
