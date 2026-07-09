@@ -349,3 +349,29 @@ Continuation of the swap session above — everything below happened after groun
 - **Backlog hygiene:** AMA-02/03/07/09 exist only as **story files**, not GitHub issues — run `story-to-issue` to file them when ready so the board reflects the plan. Also `v0.2.0` milestone still doesn't exist (issues #37/#38 unmilestoned).
 - **Eval debt (honest):** the model decision was validated **ad hoc on ~4 questions**, not a repeatable eval set. Build the small latency+quality+cost eval in Arize before the *next* model/prompt tuning round, so it's data not spot-checks. Arize **cost configs** are unset (Cost tile empty) — set them to track $/answer.
 - **Still costs money** (Railway + OpenAI) — but nano is cheap now. Glance at dashboards.
+
+---
+
+## AMA v0.2.0 — shipped the core + polish (session 2026-07-08)
+
+**🎯 Milestone: the AMA feature is a grounded, cost-controlled AI copilot, live as the centerpiece of the home page.** Everything below merged to `main` and deployed, each via the full per-slice loop (branch → PR → `/review` + `/security-review` → squash-merge → deploy → verify live → close).
+
+### Shipped this session
+- **#37 `/ask` markdown render** (PR #46) — answers were `textContent` (raw markdown); now `marked` → `DOMPurify.sanitize` → `innerHTML`. Security-reviewed (the canonical safe pattern). First `src/` change of the feature.
+- **Backlog hygiene** — created the **`v0.2.0` milestone**; filed the remaining AMA stories as issues (#40–#45) via `story-to-issue` (done ones 01/04/05 left unfiled); added all AMA issues to **board #1** with statuses; **enabled the Project "Auto-add to project" workflow** (it was *disabled* and had a stray `label:bug` filter — that's why the board had drifted; now `is:issue is:open`).
+- **#38 rate-limit + cost-cap** (PR #47) — layered: the **hard ceiling is the OpenAI monthly budget cap** (provider-enforced, set in the dashboard — Roberto did this), plus a **best-effort in-memory limiter** in the gatekeeper (`services/ask-api/api/_rate-limit.mjs`, unit-tested, 10 cases) returning 429 before any LLM call. Also scrubbed the stale DataStax references.
+- **#40 inline home agent** (PR #48) — home hosts the ask experience **inline** (reversed AMA-02's launcher→route design; recorded in the story). Extracted a **shared engine** `src/lib/ask-agent.ts` used by home *and* `/ask`. Design **C+E**: grouped-list prompts with icons + carded answer + spinner thinking-state.
+- **#49 home polish** — per feedback, made the agent the hero: removed Highlights + the visible identity block, **centered** the module. Identity preserved via the sidebar + an **sr-only `h1`** + Person JSON-LD (not lost for humans or search).
+
+### Decisions / gotchas
+- **Home = inline, not launcher** (supersedes AMA-02's non-goal). Chosen from a visual option comparison (grid / grouped-list / grouped-list+icons / centered); landed on grouped-list+icons, centered, in the site design system — *not* the reference's rainbow gradient.
+- **Provider cap > code for spend.** The real "never an unbounded bill" guarantee is the OpenAI budget cap; the gatekeeper limiter is best-effort (per-instance; `x-forwarded-for` is spoofable — that's rate-limit evasion, out of scope, backstopped by the provider cap). Revisit → shared-state limiter (Supabase/Upstash) if abuse shows up.
+- **Worktree + `gh pr merge --delete-branch`** fails locally ("main is used by another worktree"). Pattern: `gh pr merge --squash` (remote only) → then manually `git checkout -b <next> origin/main` + `git branch -D` + `git push origin --delete`.
+- **GitHub Actions Node-20→24 forcing is now active** (past June 2026) — deploys still succeed but warn; bump the action versions (`actions/deploy-pages`, checkout, setup-node, upload-artifact) — overdue small infra chore.
+
+### ▶ FRESH-SESSION ENTRY — start here (supersedes the pointer above)
+- **State:** AMA **v0.2.0 shippable core is DONE and live** — grounded (Supabase) · nano model (~7–12s) · Arize · `/ask` markdown · **rate-limit/cost-cap (#38) + OpenAI budget cap** · **inline home agent (#40)** · **centered assistant-landing polish (#49)**. Worktree on `feat/ama-followups` off latest `main`. `main` head ≈ `6d55bfe`.
+- **Remaining backlog is all optional/polish** (open, milestone `v0.2.0`): **AMA-03 streaming (#41)** · **AMA-06 chips (#42)** · **AMA-07 👍/👎 feedback (#43)** · **AMA-08 fuller resilience (#44)** · **AMA-09 eval gate (#45)**.
+- **Small carried-over items:** the #48 review's optional suggestions (guard against concurrent in-flight requests on the home ask; add an automated test for the shared `ask-agent.ts`); the Node-24 action-version bump; Arize **cost configs** still unset (Cost tile empty → set to track $/answer); the **eval harness (#45)** is the honest debt — the model decision was validated ad hoc, not repeatably.
+- **When to call v0.2.0 done:** decide which of #41–#45 are in-scope vs. deferred to a later milestone, then close `v0.2.0`. Testimonials ("Kind Words") remain a separate content-gated item.
+- **First action on resume:** `git status` → pick a story → `git checkout -b feat/<story> origin/main`. `pnpm install` if fresh machine (pnpm). For the gatekeeper, `services/ask-api` is a separate Vercel project; for Langflow/Supabase, creds are instance-level (see `services/langflow/README.md`).
