@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="An AI agent answering a question, grounded in a document corpus">
+  <rect width="1200" height="1200" fill="#1c1a17"/>
+
+  <!-- AI spark -->
+  <g stroke="#cfa24e" stroke-width="12" stroke-linecap="round">
+    <path d="M292 232 V322"/>
+    <path d="M247 277 H337"/>
+    <path d="M262 247 L322 307"/>
+    <path d="M322 247 L262 307"/>
+  </g>
+
+  <!-- question bar -->
+  <rect x="250" y="380" width="700" height="92" rx="22" fill="#232019" stroke="#3a352e" stroke-width="3"/>
+  <rect x="292" y="419" width="420" height="14" rx="7" fill="#4a443b"/>
+  <rect x="820" y="398" width="112" height="56" rx="16" fill="#cfa24e"/>
+
+  <!-- answer card -->
+  <rect x="250" y="512" width="700" height="330" rx="26" fill="#26221b" stroke="#3a352e" stroke-width="3"/>
+  <rect x="298" y="566" width="604" height="14" rx="7" fill="#5a534a"/>
+  <rect x="298" y="610" width="560" height="14" rx="7" fill="#463f37"/>
+  <rect x="298" y="654" width="588" height="14" rx="7" fill="#463f37"/>
+  <!-- CTA link line -->
+  <rect x="298" y="726" width="300" height="14" rx="7" fill="#cfa24e"/>
+  <rect x="298" y="748" width="300" height="5" rx="2.5" fill="#cfa24e" opacity="0.45"/>
+
+  <!-- grounding connector -->
+  <path d="M600 842 V904" stroke="#3a352e" stroke-width="3" stroke-dasharray="7 11"/>
+
+  <!-- corpus: the document stack the answer is grounded in -->
+  <g stroke="#3a352e" stroke-width="3">
+    <rect x="486" y="912" width="228" height="150" rx="14" fill="#201d17" transform="rotate(-4 600 987)"/>
+    <rect x="500" y="922" width="228" height="150" rx="14" fill="#232019" transform="rotate(3 614 997)"/>
+    <rect x="486" y="916" width="228" height="150" rx="14" fill="#26221b"/>
+  </g>
+  <path d="M486 916 v150" stroke="#cfa24e" stroke-width="6"/>
+  <g fill="#463f37">
+    <rect x="516" y="948" width="168" height="10" rx="5"/>
+    <rect x="516" y="972" width="140" height="10" rx="5"/>
+    <rect x="516" y="996" width="168" height="10" rx="5"/>
+    <rect x="516" y="1020" width="110" height="10" rx="5"/>
+  </g>
+</svg>
