@@ -4,19 +4,29 @@ import { siteConfig } from "@/data/site-config";
 
 const homeShell = "mx-auto w-full max-w-[1400px] px-6 sm:px-8 lg:px-14";
 
+// The gatekeeper URL (ADR-0007); set PUBLIC_ASK_API_URL in the build env. Empty = not configured.
+const apiUrl = import.meta.env.PUBLIC_ASK_API_URL ?? "";
+
+// Visitor-oriented starters, grounded in the corpus. `q` is the actual question sent.
+const prompts = [
+  { icon: "rocket", title: "What has Roberto shipped?", sub: "Impact & outcomes", q: "What has Roberto actually shipped, with real outcomes?" },
+  { icon: "sparkles", title: "Does he know RAG, evals, agentic systems?", sub: "AI depth", q: "Does Roberto know RAG, evaluation, and agentic systems?" },
+  { icon: "route", title: "Walk me through his career", sub: "Progression", q: "Walk me through Roberto's career progression." },
+  { icon: "message", title: "Could he help with my AI-product problem?", sub: "Fit for your problem", q: "Could Roberto help with my AI-product problem?" },
+];
+
+// Inline lucide-style icon paths (static SVG — no React island needed for 4 icons).
+const icons: Record<string, string> = {
+  rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M15 12v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  sparkles: '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .962 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.962 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/>',
+  route: '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+  message: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+};
+
 const highlights = [
-  {
-    label: "Now",
-    text: "AI Product Manager at SoftServe — turning enterprise AI pilots into products that ship and get adopted.",
-  },
-  {
-    label: "Arc",
-    text: "10+ years moving from operations to growth to product, and now to AI product.",
-  },
-  {
-    label: "Track record",
-    text: "Grew a startup's revenue 5× and shipped an MVP that cut claim times up to 5×.",
-  },
+  { label: "Now", text: "AI Product Manager at SoftServe — turning enterprise AI pilots into products that ship and get adopted." },
+  { label: "Arc", text: "10+ years moving from operations to growth to product, and now to AI product." },
+  { label: "Track record", text: "Grew a startup's revenue 5× and shipped an MVP that cut claim times up to 5×." },
 ];
 
 const personJsonLd = {
@@ -31,38 +41,70 @@ const personJsonLd = {
 ---
 
 <PageLayout>
-  {/* ── Hero ────────────────────────────────────────────── */}
-  <section class={`${homeShell} pt-12 pb-10 sm:pt-20 sm:pb-14`}>
+  {/* ── Identity + ask module ───────────────────────────── */}
+  <section class={`${homeShell} pt-12 pb-16 sm:pt-16`}>
     <div class="max-w-2xl">
-      <h1 class="mb-5 text-4xl font-medium leading-[1.15] tracking-tight sm:text-5xl">
-        {siteConfig.name}
-      </h1>
-      <p class="text-lg leading-relaxed text-foreground/80">
-        {siteConfig.description}
-      </p>
-      <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-        I own the path from an ambiguous problem to a measurable outcome — thinking like a
-        product strategist and working like a builder.
+      {/* Compact identity — cold-arrival context */}
+      <h1 class="text-3xl font-medium tracking-tight sm:text-4xl">{siteConfig.name}</h1>
+      <p class="mt-3 text-base leading-relaxed text-muted-foreground">
+        {siteConfig.description} I own the path from an ambiguous problem to a measurable
+        outcome — thinking like a product strategist and working like a builder.
       </p>
 
-      <div class="mt-8 flex flex-wrap items-center gap-3">
-        <a
-          href="/work"
-          class="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-        >
-          View my work →
-        </a>
-        <a
-          href="/about"
-          class="inline-flex items-center rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-        >
-          About me
-        </a>
+      {/* Ask module */}
+      <div class="mt-10">
+        <h2 class="text-lg font-medium tracking-tight">What would you like to know about me?</h2>
+        <p class="mt-1 text-sm text-muted-foreground">
+          Ask my AI — grounded in real facts about my work, and it'll point you to the best next step.
+        </p>
+
+        <form id="ask-form" data-api-url={apiUrl} class="mt-4 flex gap-2">
+          <label for="q" class="sr-only">Your question</label>
+          <input
+            id="q"
+            type="text"
+            autocomplete="off"
+            required
+            placeholder="Ask anything about Roberto…"
+            class="flex-1 rounded-lg border border-border bg-card px-4 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          />
+          <button
+            id="send"
+            type="submit"
+            class="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+          >
+            Ask
+          </button>
+        </form>
+
+        {/* Suggested prompts — grouped list with icons (C) */}
+        <div class="mt-4 overflow-hidden rounded-xl border border-border bg-card">
+          {prompts.map((p, i) => (
+            <button
+              type="button"
+              data-prompt={p.q}
+              class:list={[
+                "group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+                i > 0 && "border-t border-border",
+              ]}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0 text-muted-foreground" aria-hidden="true" set:html={icons[p.icon]} />
+              <span class="min-w-0 flex-1">
+                <span class="block text-sm font-medium text-foreground">{p.title}</span>
+                <span class="block text-xs text-muted-foreground">{p.sub}</span>
+              </span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0 text-muted-foreground/50 transition-colors group-hover:text-muted-foreground" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          ))}
+        </div>
+
+        {/* Inline answer */}
+        <section id="answer" class="ask-answer mt-8" aria-live="polite"></section>
       </div>
     </div>
   </section>
 
-  {/* ── Career highlights ───────────────────────────────── */}
+  {/* ── Career highlights (secondary) ───────────────────── */}
   <section class={`${homeShell} pb-24`}>
     <div class="mb-7 flex items-center justify-between">
       <p class="font-mono text-xs uppercase tracking-widest text-muted-foreground">Highlights</p>
@@ -77,6 +119,35 @@ const personJsonLd = {
       ))}
     </div>
   </section>
+
+  <script>
+    import { askAgent, renderThinking, renderResult } from "@/lib/ask-agent";
+
+    const form = document.getElementById("ask-form");
+    const input = document.getElementById("q");
+    const send = document.getElementById("send");
+    const out = document.getElementById("answer");
+    const apiUrl = form?.dataset.apiUrl ?? "";
+
+    async function ask(question) {
+      if (!question) return;
+      input.value = question;
+      send.disabled = true;
+      renderThinking(out);
+      const result = await askAgent(apiUrl, question);
+      renderResult(out, result);
+      send.disabled = false;
+      out.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    form?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      ask(input.value.trim());
+    });
+    document.querySelectorAll("[data-prompt]").forEach((btn) => {
+      btn.addEventListener("click", () => ask(btn.dataset.prompt));
+    });
+  </script>
 
   <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
 </PageLayout>

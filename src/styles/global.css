@@ -204,6 +204,49 @@
   @apply bg-transparent p-0;
 }
 
+/* Inline agent answer (home ask module + /ask). Chat-scale, on-brand:
+   high-contrast link text with an accent underline (accessible + branded). */
+.ask-answer {
+  @apply text-base leading-relaxed text-foreground/90;
+}
+.ask-answer p {
+  @apply mt-4;
+}
+.ask-answer p:first-child {
+  @apply mt-0;
+}
+.ask-answer a {
+  @apply font-medium text-foreground underline decoration-accent underline-offset-2 transition-colors hover:decoration-foreground;
+}
+.ask-answer strong {
+  @apply font-semibold text-foreground;
+}
+.ask-answer ul {
+  @apply mt-4 list-disc space-y-1 pl-5;
+}
+.ask-answer ol {
+  @apply mt-4 list-decimal space-y-1 pl-5;
+}
+.ask-answer li {
+  @apply leading-relaxed;
+}
+
+/* Answer card (E): rendered answer sits in a subtle surface card. */
+.ask-card {
+  @apply rounded-xl border border-border bg-card p-5;
+}
+/* "Thinking…" state: spinner + muted label. */
+.ask-thinking {
+  @apply flex items-center gap-2 text-sm text-muted-foreground;
+}
+.ask-spinner {
+  @apply inline-block h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/30 border-t-muted-foreground;
+  animation: ask-spin 0.7s linear infinite;
+}
+@keyframes ask-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Embed styles within prose */
 .prose lite-youtube {
   @apply my-8 mb-12 rounded-lg overflow-hidden;
