@@ -375,3 +375,26 @@ Continuation of the swap session above — everything below happened after groun
 - **Small carried-over items:** the #48 review's optional suggestions (guard against concurrent in-flight requests on the home ask; add an automated test for the shared `ask-agent.ts`); the Node-24 action-version bump; Arize **cost configs** still unset (Cost tile empty → set to track $/answer); the **eval harness (#45)** is the honest debt — the model decision was validated ad hoc, not repeatably.
 - **When to call v0.2.0 done:** decide which of #41–#45 are in-scope vs. deferred to a later milestone, then close `v0.2.0`. Testimonials ("Kind Words") remain a separate content-gated item.
 - **First action on resume:** `git status` → pick a story → `git checkout -b feat/<story> origin/main`. `pnpm install` if fresh machine (pnpm). For the gatekeeper, `services/ask-api` is a separate Vercel project; for Langflow/Supabase, creds are instance-level (see `services/langflow/README.md`).
+
+## AMA — Railway account migration + outage root-causes (session 2026-11-26/27)
+
+**Why:** stop paying on the original Railway account; move the Langflow backend to a new Railway workspace funded by Product Pass credits. Came back after ~4 months away to find the site down.
+
+### What happened
+- **The site had been offline for months — not Railway's fault.** I'd switched the repo to **private**; on GitHub Free, **Pages only serves public repos**, so `robertobautistafregoso.github.io` 404'd. Fix: repo public again (history scanned first — no secrets). I was paying Railway for an agent nobody could reach.
+- **Supabase had auto-paused** (free tier pauses after ~7 days idle) → retrieval would fail silently. Resumed; data intact.
+- **Migration:** backed up first (re-exported the prod flow — prompts had drifted from git), built the new instance, verified (Playground → direct API curl → gatekeeper curl → live site), *then* switched Vercel (`LANGFLOW_RUN_URL` + `LANGFLOW_API_KEY`). Old account kept as fallback until verified.
+- **`:latest` bit me twice.** New instance pulled a newer Langflow → `ModuleNotFoundError: supabase`. Pinned to the old instance's **1.10.2** (read from `/api/v1/version`) → crash, because the first boot had already migrated Postgres forward and Langflow can't downgrade. Wiped the volume, rebooted on 1.10.2, redid in-app setup. Now pinned + documented in `services/langflow/README.md`.
+- **405 from the gatekeeper** = `LANGFLOW_RUN_URL` was malformed (not the `/api/v1/run/<id>` path). Built it in the terminal (`printf … | pbcopy`) to avoid typos.
+- New instance answers in ~7s vs ~24s on the old one, and runs only the matching route (old instance's Playground showed all three branches firing — to verify).
+
+### Lessons
+- **Pin infra versions before first boot.** A moving tag + a schema-migrating app = one-way door.
+- **Silent failure was the real bug.** Three independent things (private repo, Supabase pause, version drift) each broke the agent and none alerted me. Need an uptime check.
+- **Migrate build-new → verify → switch → delete-old**, never delete first. The old instance was also my only reference for the known-good version.
+- **Second account for promo credits** — check the provider's terms; noted, my call.
+
+### ▶ FRESH-SESSION ENTRY
+- **State:** AMA live on the **new** Railway workspace (Langflow 1.10.2, pinned). Site public again. Old Railway account: delete ~24h after cutover (project delete + cancel plan + remove card + revoke old OpenAI key).
+- **Follow-ups filed as issues:** Supabase keep-alive · migrate off legacy `service_role` key before early-2027 retirement · verify single-route execution · uptime monitor for `/ask`.
+- v0.2.0 backlog (#41–#45) unchanged — still need the in/out-of-scope call to close the milestone.

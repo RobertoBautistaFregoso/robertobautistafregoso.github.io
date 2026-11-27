@@ -15,15 +15,41 @@ browser (/ask) → Vercel gatekeeper → Langflow (Railway) → OpenAI
 - `flows/` — exported flow JSON (source of truth; the Railway container's storage may be
   ephemeral, so the repo is the backup). **Export with API keys OFF; never commit secrets.**
 
+## Pinned version — `langflowai/langflow:1.10.2`
+The Railway service image is pinned to **`langflowai/langflow:1.10.2`** — the version the flow was
+built and proven on. **Never run `:latest` in prod**, and **set the pinned image before the first
+boot** of a new instance:
+- Newer images stopped bundling the Supabase client → the flow fails with
+  `ModuleNotFoundError: No module named 'supabase'`.
+- Langflow migrates its Postgres schema on boot and **can't downgrade**. Booting `:latest` once and
+  then pinning back leaves a DB the older version can't read ("Could not load flows from
+  database" / crash loop). Fix: wipe the Postgres volume (Railway → `postgres-volume` → Settings →
+  Wipe Volume), redeploy Langflow, redo the in-app setup below.
+
+Upgrading = a deliberate change: bump the tag on a throwaway instance, run the verify questions
+(§5 below), then bump prod.
+
 ## Instance-level config (NOT in the flow JSON — re-set on any fresh Langflow)
 The exported flow references credentials and tracing **by name, not value**. A fresh Langflow
 instance (e.g. a Railway rebuild) needs these set separately, or the flow silently loses its
 secrets / observability. Lesson learned: moving the flow to Railway dropped Arize because
 tracing is instance-level, not flow-level.
 
-- **Langflow global variables** (Langflow UI → Settings → Global Variables):
+- **Langflow global variables** (Langflow UI → Settings → Global Variables, type *Credential*):
   - `OPENAI_API_KEY` — used by the OpenAI Embeddings + Language Model nodes
-  - Supabase **service_role** key — used by the Supabase vector node
+  - `SUPABASE_SERVICE_KEY` — the Supabase **legacy `service_role`** key (`eyJ…`), used by the
+    Supabase vector node. (New-format `sb_secret_` keys are untested with this node.)
+- **After importing the flow, re-link two fields** with the 🌐 picker — the export leaves them
+  empty and unlinked: **Supabase → Supabase Service Key** and **OpenAI Embeddings → OpenAI API
+  Key**. The four Language Model nodes keep their `OPENAI_API_KEY` link. Then **Save**.
+- **Langflow API key** (Settings → Langflow API Keys) named `vercel-gatekeeper` → goes into the
+  gatekeeper's `LANGFLOW_API_KEY` (Vercel). Keys are per-instance.
+- **Gatekeeper `LANGFLOW_RUN_URL`** must be the **API** path
+  `https://<host>/api/v1/run/<flow-id>` — *not* the editor URL `…/flow/<flow-id>` (that returns
+  **405**). Importing gives the flow a new ID. Redeploy Vercel after changing env vars.
+- **Railway service variables:** `LANGFLOW_SUPERUSER`, `LANGFLOW_SUPERUSER_PASSWORD`,
+  `LANGFLOW_AUTO_LOGIN=False` (keeps the public URL behind login), memory limit **≥ 2 GB**
+  (OOMs under ~1 GB). `LANGFLOW_SECRET_KEY` / `LANGFLOW_DATABASE_URL` come from the template.
 - **Railway env vars** — Arize AX tracing (values live in the local Langflow `.env`):
   - `ARIZE_API_KEY`
   - `ARIZE_SPACE_ID`
